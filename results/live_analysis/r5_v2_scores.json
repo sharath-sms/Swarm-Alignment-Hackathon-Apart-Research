@@ -1,0 +1,76 @@
+{
+ "note": "frozen predictions; LOO base rate; cell-stratified paired bootstrap",
+ "test1": {
+  "pooled_frozen": {
+   "brier": 0.22,
+   "logloss": 0.824,
+   "brier_ci": [
+    0.108,
+    0.336
+   ]
+  },
+  "base_rate_LOO": {
+   "brier": 0.229,
+   "logloss": 0.654,
+   "brier_ci": [
+    0.179,
+    0.279
+   ]
+  },
+  "diff:base_rate_LOO-pooled_frozen": {
+   "est": 0.009,
+   "ci": [
+    -0.127,
+    0.137
+   ]
+  }
+ },
+ "test2": {
+  "token_conditional_frozen": {
+   "brier": 0.094,
+   "logloss": 0.333,
+   "brier_ci": [
+    0.047,
+    0.16
+   ]
+  },
+  "pooled_frozen": {
+   "brier": 0.224,
+   "logloss": 0.822,
+   "brier_ci": [
+    0.143,
+    0.305
+   ]
+  },
+  "base_rate_LOO": {
+   "brier": 0.239,
+   "logloss": 0.673,
+   "brier_ci": [
+    0.21,
+    0.258
+   ]
+  },
+  "diff:pooled_frozen-token_conditional_frozen": {
+   "est": 0.13,
+   "ci": [
+    0.04,
+    0.22
+   ]
+  },
+  "diff:base_rate_LOO-token_conditional_frozen": {
+   "est": 0.145,
+   "ci": [
+    0.051,
+    0.211
+   ]
+  },
+  "diff:base_rate_LOO-pooled_frozen": {
+   "est": 0.015,
+   "ci": [
+    -0.061,
+    0.087
+   ]
+  }
+ },
+ "test2_pooled_cm6_not_frozen_value": 1.0
+}

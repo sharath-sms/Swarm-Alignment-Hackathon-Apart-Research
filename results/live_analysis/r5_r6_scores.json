@@ -1,0 +1,85 @@
+{
+ "test2_scores": {
+  "token_conditional": {
+   "brier": 0.094,
+   "brier_ci": [
+    0.031,
+    0.173
+   ],
+   "logloss": 0.333,
+   "brier_minus_base_rate_ci": [
+    -0.224,
+    -0.029
+   ]
+  },
+  "pooled_policy": {
+   "brier": 0.224,
+   "brier_ci": [
+    0.103,
+    0.351
+   ],
+   "logloss": 0.82,
+   "brier_minus_base_rate_ci": [
+    -0.129,
+    0.137
+   ]
+  },
+  "base_rate": {
+   "brier": 0.225,
+   "brier_ci": [
+    0.18,
+    0.279
+   ],
+   "logloss": 0.643
+  }
+ },
+ "test1_scores": {
+  "pooled_prereg": {
+   "brier": 0.219,
+   "brier_ci": [
+    0.09,
+    0.358
+   ],
+   "logloss": 0.821,
+   "brier_minus_base_rate_ci": [
+    -0.129,
+    0.151
+   ]
+  },
+  "base_rate": {
+   "brier": 0.215,
+   "brier_ci": [
+    0.156,
+    0.273
+   ],
+   "logloss": 0.621
+  }
+ },
+ "H5_sensitivity": {
+  "T50_150 (prereg)": {
+   "push_M": "10/10",
+   "push_Q": "2/10",
+   "p": 0.000357227911407478
+  },
+  "T50_100": {
+   "push_M": "8/10",
+   "push_Q": "1/10",
+   "p": 0.002738747320790664
+  },
+  "sustained_f>=0.9_5rounds_150": {
+   "push_M": "10/10",
+   "push_Q": "1/10",
+   "p": 5.953798523457966e-05
+  }
+ },
+ "T50_vs_sustained_agreement": {
+  "test1": 1.0,
+  "test2": 0.9714285714285714
+ },
+ "spontaneous_flip_bounds": {
+  "exact-policy models (6 pairs x 200 runs each, 0 flips)": 0.00249,
+  "per pair (200 runs, 0 flips)": 0.0149,
+  "Llama-3-70B archive (4 runs, 0 flips)": 0.527
+ },
+ "MC_se_emulator_flip_1000_runs_max": 0.0158
+}

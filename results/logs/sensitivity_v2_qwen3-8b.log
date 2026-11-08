@@ -1,0 +1,6 @@
+qwen3-8b: truth p_c = 0.2732
+qwen3-8b K=  6: mle bias -0.0048 rmse 0.0184 | jeffreys bias -0.0840 rmse 0.0843 | laplace bias -0.1513 rmse 0.1515
+qwen3-8b K= 12: mle bias -0.0024 rmse 0.0103 | jeffreys bias -0.0436 rmse 0.0443 | laplace bias -0.0837 rmse 0.0838 | coverage90 {'mle_boot': 0.6666666666666666, 'jeffreys_post': 0.0}
+qwen3-8b K= 24: mle bias -0.0004 rmse 0.0076 | jeffreys bias -0.0198 rmse 0.0214 | laplace bias -0.0420 rmse 0.0422
+qwen3-8b K= 48: mle bias -0.0010 rmse 0.0044 | jeffreys bias -0.0092 rmse 0.0102 | laplace bias -0.0204 rmse 0.0213 | coverage90 {'mle_boot': 1.0, 'jeffreys_post': 0.3333333333333333}
+qwen3-8b K=120: mle bias -0.0023 rmse 0.0036 | jeffreys bias -0.0054 rmse 0.0059 | laplace bias -0.0086 rmse 0.0091

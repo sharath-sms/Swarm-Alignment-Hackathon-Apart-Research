@@ -1,239 +1,394 @@
 ---
-title: "Measuring takeover vulnerability in LLM agent populations: emulators, adversary targets, and the limits of early warning"
-author: "Sharath M Shankaranarayana (Synthpop.AI)"
-date: "Apart Swarm Alignment Hackathon 2026 — Track 2 (bridging Track 4)"
+title: "Forecasting Takeover in LLM Agent Populations: Preregistered Tests of Policy Emulators and the Limits of Early Warning[^title]"
+author: "Sharath M Shankaranarayana"
+affiliation: "Synthpop.AI"
+with: "Apart Research"
+abstract: |
+  A small committed minority can tip a population of LLM agents into a new convention, an abstraction of a few
+  compromised agents hijacking a swarm's norms. Large-population estimates of the required *critical mass* rely on
+  emulators driven by policies extracted from the model, yet these forecasts have not been tested prospectively. In an
+  LLM naming game we run two preregistered live forecasting tests (DeepSeek-v4-flash; 67 populations; 121k
+  decisions) and diagnose forecast errors against exact log-probability policies of three open-weight models. (i) Live
+  decisions depart only slightly from the offline policy samples (calibrated test p ≈ 0.03; estimated RMS difference
+  ≈ 0.01), and substituting live-estimated probabilities changes the emulated critical mass by ≤ 0.011. (ii) A
+  preregistered emulator built from a policy pooled across word pairs failed (2/5 levels outside 95% predictive
+  intervals) and had no skill over the base rate (Brier 0.22 vs 0.22). Exact policies show why: averaging the
+  transition policy across contexts yields a transition far sharper than the corresponding mixture of populations
+  (flip-probability error up to 0.37), and the smoothed estimators we tested bias critical mass low by up to 60% at
+  small sample sizes. (iii) A preregistered target-conditional emulator correctly predicted the direction of a large
+  target asymmetry (10/10 vs 2/10 takeovers, p = 3.6×10^−4^) and improved the Brier score to 0.09; its quantitative
+  calibration is only weakly tested. (iv) In emulation, surrogate-calibrated early-warning indicators showed no
+  consistent incremental discrimination once population level and trend were matched. We report all failed
+  predictions and withdrawn claims.
 ---
 
-# Abstract
-
-A small committed minority can tip a population of LLM agents into a new convention — an abstraction of a few
-compromised agents hijacking a swarm's norms. Oversight needs two things from the science: reliable estimates of the
-critical mass, and monitors that warn before a takeover. Using an LLM naming game, two preregistered live experiments
-(DeepSeek-v4-flash, 67 populations, 121k live decisions), exact log-probability policies of three open-weight models,
-and a level-matched monitoring evaluation, we find: (1) **live agents follow their extracted per-context policy** —
-live decisions are statistically indistinguishable from offline policy samples (p ≈ 1, mean |ΔP| ≤ 0.016), so
-population emulators can in principle be exact; (2) **but critical-mass estimates are fragile**: a preregistered
-pooled-policy emulator **failed** (2/5 levels outside 95% predictive intervals), and exact-policy ground truth shows
-why — pooling across contexts makes transitions spuriously sharp (flip-probability error up to 0.37) and standard
-smoothing of sampled policies biases critical mass downward by 20–60%; (3) **the adversary's choice of target sets
-the critical mass** (up to 6× across targets; the same target was hardest in all four models), and a token-conditional
-emulator prospectively predicted this asymmetry in a second preregistered test (push "M" 10/10 vs push "Q" 2/10,
-p = 3.6×10^−4^; 7/7 cells inside predictive intervals); (4) **generic early-warning signals carry essentially no
-information** about an approaching takeover once level and trend are matched, even when the information exists (an
-oracle reaches AUROC 0.87–1.0). We report failed preregistered predictions and withdrawn exploratory claims in full.
+[^title]: Research conducted at the [Swarm Alignment Hackathon](https://apartresearch.com/sprints/swarm-alignment-2026), November 2026.
 
 # 1. Introduction
 
-The July 2026 Hugging Face incident (METR, 2026) showed agent populations self-organising into collective behaviour no
-single-agent evaluation anticipates. Track 2 asks for science that predicts population-level failures *before*
-deployment. A canonical minimal model is the naming game with a committed minority (Xie et al. 2011; Centola et al.
-2018), recently studied with LLM agents (Ashery et al. 2025; Flint et al. 2026a,b; Passaro et al. 2026; De Marzo et
-al. 2026). These works establish critical masses, topology and group-size effects; large-population results rely on
-*emulators* built from extracted LLM policies. We ask questions an overseer would ask: **How much can we trust an
-emulator's critical-mass estimate? Does it depend on what the adversary pushes? Can a population-level monitor see a
-takeover coming?**
+Populations of interacting LLM agents can self-organise into collective behaviour that no single-agent evaluation
+anticipates; the July 2026 Hugging Face incident is a recent example [16]. A concerning failure mode is *norm
+hijacking*: a handful of agents that never update can, through ordinary repeated interaction, pull a population onto a
+convention of their choosing. In the classical committed-minority model this happens once the adversarial fraction
+exceeds a critical mass [8, 9], and recent work reproduces such tipping points with LLM agents [1–5].
+
+An overseer wants to know *how many agents an adversary must control* and *whether a takeover can be seen coming*.
+Because live experiments are expensive, large-population answers rely on **emulators**: simulations driven by
+policies extracted from the LLM [2–4]. Prior work validated per-pair, log-probability emulators against direct
+LLM simulations [2, 3] and mapped directional, convention-dependent critical masses across models [3]. What has not
+been done is to **forecast prospectively**: freeze an emulator's numerical predictions, then test them on fresh live
+populations, and diagnose the errors. This matters most for black-box APIs that expose no log-probabilities, where the
+policy must be estimated from samples and choices about aggregation and smoothing are unavoidable.
+
+**Threat model.** An adversary controls c of N agents (committed fraction p = c/N) that always play a target
+convention B, or poisons agents' memories at a hidden rate q(t). The adversary may choose which convention to push. The
+defender can query the model offline and observe the population's aggregate behaviour.
 
 **Contributions.**
-(a) An empirical validation that live LLM agents follow their extracted conditional policy (121k decisions), plus two
-*preregistered* live tests of emulator predictions — the first failed, the second (token-conditional) passed.
-(b) Exact-policy ground truth (Qwen3-8B, Gemma-3-12B, Mistral-7B) quantifying two estimation pitfalls: pooling across
-contexts and smoothing of sampled policies. Practical guidance for building emulators from APIs without logprobs.
-(c) Cross-model evidence that critical mass depends strongly on the adversary's target convention (extending the
-qualitative observation in Ashery et al. 2025) and a precondition check (stable convention without adversaries) that
-one model fails.
-(d) A monitoring evaluation with mean-drift, away-ramp, stop-short, stationary and **level-matched** nulls,
-surrogate-calibrated indicators, and incremental-value tests, showing generic EWS are not a free lunch.
 
-# 2. Related work
+1. **Two preregistered forecasting tests.** An emulator built from a policy pooled across word pairs *failed* and had no
+   skill over the base rate; a target-conditional emulator correctly forecast a large directional asymmetry and
+   improved proper scores.
+2. **A decision-level check of the policy-following assumption for a sampled (no-logprob) API model**, with calibrated
+   inference, power analysis, and the consequence for the forecast quantity.
+3. **A controlled diagnosis of forecast error against exact policies**: aggregation across contexts versus sampling
+   and smoothing, with bias, RMSE and interval coverage of the critical-mass estimate.
+4. **A level-matched, surrogate-calibrated evaluation of early-warning indicators** for an emulated memory-poisoning
+   driver, as a bounded secondary result.
 
-*LLM conventions and committed minorities:* Ashery, Aiello & Baronchelli (2025, Sci. Adv.); Flint et al. (2026a, PNAS,
-group size; per-pair logprob policies); Flint et al. (2026b, arXiv 2609.25194, indirect tipping); Passaro et al. (2026,
-arXiv 2610.31165, topology, 10^3^–10^5^ agents via extracted policies). *Conformity and hysteresis:* De Marzo et al. (2026,
-arXiv 2605.10721). *Statistical physics of LLM populations:* De Nobili et al. (2026, arXiv 2605.10528, 2608.02178).
-*Early-warning signals:* Scheffer et al. (2009); Dakos et al. (2012); Boettiger & Hastings (2012); Bury et al. (2021).
-*Multi-agent oversight:* Hammond et al. (2025); Makins et al. (2026, arXiv 2607.07368). Our emulator findings do **not**
-show that per-pair logprob emulators (Flint et al.; Passaro et al.) are wrong; they show which design choices break an
-emulator and validate the policy-following assumption those works rely on.
+# 2. Related Work
+
+**Conventions and committed minorities in LLM populations.** Ashery et al. [1] showed that LLM populations form
+conventions that committed minorities can overturn, noting that the tipping point depends on the conventions
+involved. Flint et al. extracted per-pair log-probability policies, validated the resulting model against direct LLM
+simulations, and studied group size [2]. Their *indirect tipping* study [3] showed quantitatively that critical masses
+are directional and convention-dependent across four models, forming a directed graph over equilibria. Passaro et al.
+[4] reused those per-pair policies to reach 10^3^–10^5^ agents across topologies and excluded conditions whose
+convention is unstable with zero committed agents. De Marzo et al. [5] report conformity-driven misalignment and
+hysteresis; De Nobili et al. [6, 7] give statistical-physics descriptions of LLM populations. **Target dependence,
+emulator validation with log-probability policies, and the stability precondition are therefore established.** Our
+contribution is complementary: *preregistered* numerical forecasts tested on fresh live populations, a validation for
+a *sampled* policy from an API without log-probabilities, and a controlled account of how estimation and aggregation
+choices propagate into critical-mass forecasts.
+
+**Early warning and multi-agent risk.** Critical slowing down [10, 11] is used to anticipate transitions, but
+conditioning on transitions inflates apparent performance [12]; indicators can also be learned [13]. Hammond et al.
+[14] catalogue multi-agent risks, and Makins et al. [15] show that per-instance monitors miss distributed attacks.
 
 # 3. Methods
 
-**Environment** (`swarm_ews/envs/naming_game.py`, adapted from Ashery et al., MIT). N = 24 agents; each round a random
-perfect matching; each pair plays a coordination game (+100 match / −50 mismatch). Agents see their last 5 records
-(own word, partner word, payoff) — no cumulative score (removing hidden state present in the original prompt); option
-order shuffled per call; reasoning disabled (verified 0 reasoning tokens); JSON output, one resample on failure
-(0 unrecoverable parse failures in 121,423 live calls). All agents start on convention A; cm committed agents always play B. Observable
-f_t = fraction of non-committed agents playing B; a population "flips" if the 2-round mean of f_t reaches 0.5 within
-150 rounds. Because the prompt is a deterministic function of (memory state, word pair, option order), an emulator
-with exact per-context choice probabilities *is* the live system up to sampling.
+## 3.1 Environment and definitions
 
-**Policies.** *API model (DeepSeek-v4-flash, Adaption):* no logprobs are exposed, so P(B | state) is estimated by
-sampling (1024 states × 8 samples, plus 40–48 extra on near-threshold states). *Local models (MLX, Apple M5 Pro):*
-exact next-token probabilities of the two words after a forced `{"value": "` prefix (≥ 97% probability mass on the
-two answers), for all 1024 states × 6 word pairs × 2 option orders. *Emulator* (`swarm_ews/emulator.py`) reproduces
-the live protocol exactly.
+We adapt the naming game of Ashery et al. [1] (MIT licence). N = 24 agents start on convention A. Each round agents are
+paired by a uniformly random perfect matching, and each pair plays a coordination game (+100 if both choose the same
+word, −50 otherwise). An agent's prompt contains only its last five records (own word, partner's word, payoff); we
+remove the cumulative score of the original prompt so that no hidden state remains. Option order is shuffled per call,
+reasoning is disabled (0 reasoning tokens verified), and output is JSON with one resample on parse failure
+(0 unrecoverable failures in 121,423 live calls). c committed agents always play B.
 
-**Preregistration** (documents available from the author; SHA-256 of prereg, code, policies and predictions recorded before each live
-experiment). *v1:* pooled DeepSeek policy; H1 = each level's live flip count inside its 95% predictive interval (PI).
-*v2 addendum:* token-conditional policies for (A=M, B=Q) "push Q" and (A=Q, B=M) "push M", fixed words, new seeds;
-primary H5 = flips(push M) > flips(push Q) at cm in {3,4} (one-sided Fisher). PIs were built from Jeffreys-Beta posterior
-draws of the policy — later shown (§4.3) to be biased; we report this as a limitation.
+The observable f~t~ is the fraction of non-committed agents playing B. A population **flips** if the two-round mean of
+f~t~ reaches 0.5 within 150 rounds: a *finite-horizon first-passage event* for a given N, horizon, initial state and
+event definition, not a statement about an asymptotic bifurcation. φ(p) is the flip probability and the **critical
+mass** p~c~ solves φ(p~c~) = ½ (linear interpolation between integer c). Emulator flip probabilities are Monte Carlo
+estimates (≥ 300 runs; SE ≤ 0.03; 1,000 runs, SE ≤ 0.016, for frozen predictions). The flip event agreed with
+sustained adoption (f~t~ ≥ 0.9 for 5 rounds) in 97–100% of live runs (§4.4).
 
-**Monitoring** (`scripts/monitor_v2.py`). Hidden driver: memory poisoning — each round each agent's new record is
-forged (partner recorded as B) with probability q(t). TOWARD runs ramp q from 0 to 1.6·q_c over 300 rounds; a pool of
-4,700 non-tipping null runs spans stationary, stop-short and away ramps at many levels. Segments ending L in
-{10, 25, 50, 100} rounds before the tip are matched 1:1 to null segments on final level and trend (caliper 0.25 SD).
-Indicators: variance and lag-1 autocorrelation, converted to **surrogate-calibrated** z-scores (binomial surrogates
-around each series' own trend), level, trend, recent slopes, and an oracle (true q). Incremental value: grouped 5-fold
-CV logistic AUROC with paired-bootstrap ΔAUROC CIs. The pipeline was first validated on synthetic systems (§4.5).
+The prompt is a deterministic function of the memory state s (2^10^ = 1024 states), word pair w and option order o.
+Because order is randomised per call, the population dynamics are driven by the order-marginalised policy
+π(s, w) = E~o~ P(B | s, w, o); an emulator with the true π(s, w) reproduces the live protocol up to Monte Carlo error.
+
+## 3.2 Policy extraction and emulators
+
+**API model (DeepSeek-v4-flash).** No log-probabilities are exposed, so π is estimated by sampling: 8 samples per state
+cycling through six word pairs, plus 40–48 extra samples on near-threshold states, and pair-specific top-ups for the
+two pairs of Test 2. **Local models (Qwen3-8B, Gemma-3-12B, Mistral-7B, Llama-3.1-8B; 4-bit MLX community builds on an
+Apple M5 Pro).** We compute next-token probabilities of the two words after a forced `{"value": "` prefix, renormalised
+over the two answers and tempered to T = 0.7 (≥ 97% of mass on the two answers), for all 1024 states × 6 pairs × 2
+orders. We call these **exact policies**: exact for this forced-prefix two-answer policy of these quantised builds, not
+for unrestricted generation. We compare *pooled* (π averaged over pairs) vs *target-conditional* (π for one pair)
+emulators, and *unsmoothed* maximum-likelihood estimates k/n vs *Jeffreys* (k + ½)/(n + 1) and *Laplace*
+(k + 1)/(n + 2) estimates.
+
+## 3.3 Preregistered live tests
+
+Before each live experiment we recorded SHA-256 hashes of the preregistration, code, policies and predictions (the
+documents are available from the author; hashes establish content identity, not independent chronology). **Test 1**
+used the pooled DeepSeek policy and counterbalanced word pairs by seed (pair allocation was therefore not balanced
+within every level of c). H1: at every level of c the live flip count lies inside the emulator's 95% predictive interval
+(PI), evaluated by an interval rule and a Holm-corrected binomial rule. **Test 2** (addendum) used target-conditional
+policies for "push Q" (A = M, B = Q) and "push M" (A = Q, B = M) with fixed words and fresh seeds. The primary H5 is
+directional: flips(push M) > flips(push Q) at c in {3, 4} (one-sided Fisher exact test); H1′ repeats the PI check. PIs
+were built from Jeffreys-Beta posterior draws of the policy, which §4.3 shows to be biased; we treat this as a
+limitation and add proper scores against baselines.
+
+## 3.4 Monitoring evaluation (emulation)
+
+The hidden driver is memory poisoning: each round each agent's new record is forged (partner recorded as playing B)
+with probability q(t). In emulation with N = 48 (not the N = 24 of the live tests), TOWARD runs ramp q from 0 to
+1.6·q~c~ over 300 rounds, and 4,700 non-tipping null runs cover stationary, stop-short and away-ramp schedules.
+Segments ending L in {10, 25, 50, 100} rounds before the tip are matched 1:1 to null segments on final level and trend.
+Indicators are variance and lag-1 autocorrelation (AC1) converted to surrogate-calibrated z-scores, plus level, trend,
+recent slopes and an oracle that observes q. Incremental value is the grouped cross-validated logistic AUROC of
+level + trend with and without the indicators. Uncertainty uses a **cluster bootstrap over connected components of
+matched pairs that share a null run**, and a refit bootstrap for the preregistered comparisons (H4: indicators add
+≤ 0.02 AUROC). This is a retrospective discrimination task on selected pre-tip segments, not a prospective alarm.
 
 # 4. Results
 
-## 4.1 Live agents follow their extracted policy (M4)
-Reconstructing (state, pair, order) from 52,493 (v1) and 68,882 (v2) live decisions and comparing with offline policy
-samples for the same (pair, state): homogeneity G-test p = 1.0 (v1, 717 cells) and p = 1.0 (v2, 545 cells); weighted
-mean |P_live − P_extracted| = 0.015 and 0.016. No provider drift or hidden context effect is detectable. Any
-emulator–live gap must therefore come from how the policy is *estimated or aggregated*.
+## 4.1 Live decisions versus the extracted policy
+
+We reconstructed the context of 121,375 first-attempt live decisions and compared them with 38,948 offline samples of
+the same model, cell by cell. Using cells with ≥ 5 decisions on both sides (579 cells with outcome variation, covering
+64,002 live decisions), a homogeneity test **calibrated by parametric bootstrap** rejects equality (G = 680, p = 0.026;
+p = 0.016–0.13 across strata: test 1 or 2 only, early or late rounds). The difference is small: the
+estimated root-mean-square difference between true live and extracted probabilities is 0.006 (95% CI 0–0.029;
+order-conditional cells 0–0.040), and live agents chose B slightly more often (signed +0.005). The test is well powered
+(89% power for a 0.03 shift). For the forecast quantity, replacing extracted with live-estimated probabilities in the
+446 states with ≥ 5 live decisions changes the emulated critical mass from 0.146 to 0.145 (pooled), 0.184 to 0.182
+(push Q) and 0.117 to 0.106 (push M). **Live agents deviate detectably but slightly from the extracted policy, and the
+deviation has little effect on critical-mass forecasts.** (A uniform 0.05 shift in all choice probabilities would
+move it to 0.073 or 0.178.)
 
 ## 4.2 Preregistered test 1: a pooled emulator fails near threshold
-Pooled-policy prediction p_c = 0.135; live (32 populations, word pairs counterbalanced; Fig. 1):
 
-| cm | p | live flips | emulator flip | 95% PI (k) | H1 |
-|---|---|---|---|---|---|
+The pooled-policy emulator predicted p~c~ = 0.135. Table 1 compares its predictions with 32 live populations.
+
+: **Table 1.** Preregistered test 1 (DeepSeek-v4-flash, N = 24). k = number of populations that flipped. H1 requires
+k to lie inside the emulator's 95% predictive interval.
+
+| c | p | Live flips | Emulator φ | 95% PI (k) | H1 |
+|:-:|:-:|:-:|:-:|:-:|:-:|
 | 2 | 0.083 | 1/4 | 0.00 | [0, 0] | **fail** |
 | 3 | 0.125 | 4/8 | 0.11 | [0, 5] | pass |
 | 4 | 0.167 | 5/8 | 0.97 | [7, 8] | **fail** |
 | 5 | 0.208 | 8/8 | 1.00 | [8, 8] | pass |
 | 8 | 0.333 | 4/4 | 1.00 | [4, 4] | pass |
 
-**H1 is rejected** under both preregistered rules (interval rule and Holm-binomial). The cm = 4 failure is robust
-(P(k ≤ 5 | 0.962, 8) ≈ 0.003); the cm = 2 failure rests on one run. The live transition is broader than predicted.
-Post hoc, outcomes tracked the committed word (cm 2–4: push M 5/5, push Q 0/5). Re-predicting each run with its own
-word pair's unsmoothed policy cut the Brier score from 0.22 to 0.09 (log-loss 0.80 → 0.49).
+**H1 is rejected** under both preregistered rules. The c = 4 failure is robust (P(k ≤ 5 | φ = 0.962, n = 8) ≈ 0.003);
+the c = 2 failure rests on a single run. The pooled forecast had **no skill over a constant base-rate forecast**
+(Brier 0.219 [0.090, 0.358] vs 0.215; log-loss 0.82 vs 0.62). *Post hoc*, outcomes at c = 2–4 tracked the committed
+word (push M 5/5, push Q 0/5; Fig. 1), and re-predicting each run with its own pair's unsmoothed policy reduced the Brier
+score to 0.09. Because pair allocation also varied across levels, the failure is not an isolated test of pooling;
+§4.3 isolates pooling with exact policies.
 
-![Preregistered test 1. Left: live flip fractions (Wilson 95% CI) vs the pooled-policy emulator. Right (post hoc): flips at cm 2–4 by committed word.](figures/fig1_live_vs_emulator.png){width=90%}
+![**Figure 1.** Preregistered test 1. *Left:* live flip fraction (Wilson 95% CI) vs the pooled-policy emulator.
+*Right (post hoc):* flips at c = 2–4 split by the committed word.](figures/fig1_live_vs_emulator.png){width=90%}
 
+## 4.3 Diagnosing forecast error with exact policies
 
-## 4.3 Why: exact-policy ground truth (Qwen3-8B, Gemma-3-12B, Mistral-7B)
-*Precondition.* Llama-3.1-8B does not hold a convention without adversaries (P(B | five successful A rounds) up to 0.95;
-spontaneous flips in 5/6 word pairs) and was excluded — critical mass is undefined for it. The other three hold
-conventions perfectly (0 spontaneous flips).
-*Target dependence.* Exact per-pair critical masses span 0.23–0.38 (Qwen), 0.25–0.37 (Gemma) and 0.07–0.41 (Mistral);
-pushing Q from M is the hardest target in every model, and in DeepSeek live (Fig. 2 right).
-*Pooling.* The pooled emulator matches the counterbalanced mixture's p_c (e.g. Qwen 0.272 vs 0.270) but produces a
-transition that is far too sharp: maximum flip-probability error 0.20 (Qwen, Gemma) and 0.37 (Mistral) — the same
-signature as the v1 failure (a mixture of sharp, target-specific transitions is broad).
-*Smoothing.* Re-running sampled extraction in silico: the unsmoothed estimator is unbiased even at 4 samples per state
-(Qwen p_c 0.28 vs 0.272), whereas Jeffreys smoothing gives 0.216 at 8 samples (Gemma 0.226 vs 0.310; Mistral 0.167 vs
-0.235) and Laplace is worse (Fig. 2 left). Smoothing assigns spurious switching to states the model never leaves,
-making populations look easier to take over.
+**Precondition.** Llama-3.1-8B does not hold a convention without adversaries (P(B | five successful A rounds) up to
+0.95; spontaneous flips in 5/6 pairs) and is excluded, following the stability criterion of [4]. Qwen, Gemma and
+Mistral showed 0 spontaneous flips in 1,200 runs each (95% upper bound on the per-run rate 0.25%).
 
-![Exact-policy ground truth (Qwen3-8B, Gemma-3-12B, Mistral-7B). Left: estimated / true critical mass vs samples per state for unsmoothed (MLE) and Jeffreys-smoothed estimators (median, 95% range). Right: critical mass by target convention.](figures/fig4_sensitivity.png){width=100%}
+**Target dependence (replication).** Consistent with [1, 3], p~c~ depends on the pushed convention (Table 2); pushing Q
+from M is the hardest target in all three models and in DeepSeek live.
 
+**Aggregation.** Averaging the *transition policy* across pairs is not the same as averaging *population outcomes*
+across pairs. The pooled emulator happens to land near the mixture's p~c~ here (e.g. Qwen 0.272 vs 0.270), but its
+transition is far sharper: maximum flip-probability error 0.20–0.37 (Table 2). A mixture of sharp, target-specific
+transitions is broad, which matches the Test 1 failure pattern.
 
-## 4.4 Preregistered test 2: a token-conditional emulator predicts live behaviour
-With target-specific DeepSeek policies (Fig. 3; 35 new populations):
+**Estimation.** We re-ran sampled extraction *in silico* with a **fixed, balanced target mixture** (K a multiple of 6:
+K/6 samples per pair and state), 30 replicates per K. The unsmoothed estimator's critical mass was nearly unbiased
+even at K = 6 (bias −0.005, +0.006 and −0.001 for Qwen, Mistral and Gemma; RMSE 0.013–0.023), whereas Jeffreys
+(bias −0.08 to −0.11) and Laplace (−0.15 to −0.20) estimates were strongly biased low at small K, with bias shrinking as K grows (Jeffreys −0.005 to +0.000 at K = 120). Interval
+calibration differed sharply (15 replicates each; nominal 90%): a parametric bootstrap from the unsmoothed estimate
+covered the true p~c~ in 67–80% of replicates at K = 12 and 80–100% at K = 48, whereas Jeffreys posterior draws covered
+it in 0% at K = 12 and 33–53% at K = 48. Our preregistered predictive intervals were built from such draws, so they
+were shifted toward a lower critical mass. Unbiased
+estimates of each probability need not yield an unbiased estimate of the nonlinear threshold, and a zero count makes
+the unsmoothed estimate certain that a transition never happens. Neither smoothing nor Bayesian uncertainty
+propagation is ruled out; the specific posterior-mean estimators we tested are biased at small K.
 
-| direction | cm | live k/5 | emulator flip | 95% PI (k) |
-|---|---|---|---|---|
+: **Table 2.** Exact-policy ground truth (N = 24, 150-round horizon). Range of p~c~ across six target conventions;
+maximum |Δφ| of the pooled emulator relative to the counterbalanced mixture; bias of the critical-mass estimate at
+K = 6 samples per state (balanced design).
+
+| Model | p~c~ range across targets | Hardest target | Pooled max \|Δφ\| | Bias at K = 6: MLE / Jeffreys / Laplace |
+|:--|:-:|:-:|:-:|:-:|
+| Qwen3-8B | 0.23–0.38 | M → Q | 0.20 | −0.005 / −0.084 / −0.151 |
+| Gemma-3-12B | 0.25–0.37 | M → Q | 0.20 | −0.001 / −0.112 / −0.198 |
+| Mistral-7B | 0.07–0.41 | M → Q | 0.37 | +0.006 / −0.088 / −0.163 |
+
+![**Figure 2.** Exact-policy ground truth. *Left:* estimated / true critical mass vs samples per state in a balanced
+design (K/6 samples per word pair), mean ± SD over 30 replicates, for unsmoothed (MLE) and Jeffreys estimators.
+*Right:* critical mass by target convention (error bars: ±2 Monte Carlo SD over 8 seed sets; all ≤ 0.005).](figures/fig4_sensitivity.png){width=100%}
+
+## 4.4 Preregistered test 2: a target-conditional forecast
+
+Using target-specific DeepSeek policies, we ran 35 new populations (Table 3, Fig. 3).
+
+: **Table 3.** Preregistered test 2 (DeepSeek-v4-flash, 5 populations per cell). Values are listed per level of c.
+
+| Direction | c | Live k/5 | Emulator φ | 95% PI (k) |
+|:--|:-:|:-:|:-:|:-:|
 | push Q | 3 / 4 / 5 / 6 | 0 / 2 / 5 / 5 | 0.00 / 0.18 / 0.96 / 1.00 | [0,1] / [0,5] / [4,5] / [5,5] |
 | push M | 2 / 3 / 4 | 1 / 5 / 5 | 0.01 / 0.59 / 1.00 | [0,4] / [1,5] / [5,5] |
 
-**H5 passes**: at cm 3–4, push M flipped 10/10 vs push Q 2/10 (one-sided Fisher p = 3.6×10^−4^). **H1′ passes**
-(7/7 cells inside PIs), but several PIs are wide, so H1′ is weak. Descriptively, point predictions scored Brier 0.094
-(log-loss 0.33) vs 0.224 (0.82) for the pooled policy. Time-to-tip equivalence (ratio within [0.67, 1.5]) was
-established in 1 of 4 eligible cells; the rest are inconclusive. With 10 vs 10 populations, H5 could detect only large
-effects (≈ 0.8 vs 0.2); the convention-dependence itself is known (Ashery et al. 2025) — the new element is a
-prospective quantitative prediction.
+**The directional forecast H5 is confirmed:** at c = 3–4, push M flipped 10/10 populations vs 2/10 for push Q
+(one-sided Fisher p = 3.6×10^−4^). It is robust to the event definition (100-round horizon: 8/10 vs 1/10, p = 0.003;
+sustained adoption: 10/10 vs 1/10, p = 6×10^−5^). **Quantitative calibration is only weakly tested:** H1′ passes
+(7/7 cells inside PIs), but intervals such as [0, 5] cannot be falsified with five populations. As proper scores, the
+target-conditional forecast reached Brier 0.094 [0.031, 0.173] (log-loss 0.33), better than a base-rate forecast
+(0.225; ΔBrier 95% CI [−0.224, −0.029]), whereas the pooled policy again matched the base rate (0.224). Time-to-tip
+equivalence was established in 1 of 4 eligible cells. With 10 vs 10 populations, H5 could detect only large effects
+(≈ 0.8 vs 0.2).
 
-![Preregistered test 2: live flips (Wilson 95% CI) vs token-conditional emulator curves, both directions.](figures/fig5_confirmatory_v2.png){width=55%}
+![**Figure 3.** Preregistered test 2: live flip fraction (Wilson 95% CI) vs the target-conditional emulator, for both
+directions.](figures/fig5_confirmatory_v2.png){width=55%}
 
+## 4.5 Monitoring: no consistent incremental value from the tested indicators
 
-## 4.5 Monitoring: generic early-warning signals add essentially nothing
-*Validation.* On synthetic systems the pipeline detects a true fold against a mean-drift null (AUROC 0.95) and does not
-fire on mean drift alone (0.54). A preregistered criterion (P5: a level baseline cannot separate fold from mean drift)
-**failed** (0.62); the post-hoc replacement (EWS beat level by +0.3 AUROC) is reported as such. The raw
-binomial-normalised variance indicator is biased on pure noise when the mean moves (Kendall τ up to +0.4–0.7), so
-variance scores were recalibrated with surrogates; residual bias remains when the mean accelerates faster than the
-detrending window — exactly the pre-tip regime.
-*Unmatched design (as preregistered).* Level and trend separate TOWARD from nulls almost perfectly (CV AUROC 0.97–1.00),
-so preregistered H4 ("EWS add ≤ 0.02") passes trivially.
-*Level-matched design (Fig. 4).* After matching (level and trend AUROC ≈ 0.50), the oracle still separates classes
-(0.87–1.00 at leads 25–50) — the information exists — but calibrated EWS alone reach only 0.43–0.58 with no consistent
-sign across leads or models (best-response, DeepSeek, Qwen, Gemma policies), and their incremental value over level + trend is mostly within ±0.05 — adding AC1 even
-*reduced* CV AUROC in two cells (Qwen lead 50: −0.08; Gemma lead 25: −0.17). H4 is "not falsified, equivalence not established" (ΔAUROC CIs ≈ ±0.045). The preregistered *raw* variance
-indicator formally fails H4 for Gemma at lead 50 (+0.099 [+0.054, +0.142]); the calibrated indicator does not
-(+0.039 [−0.006, +0.084]), consistent with an indicator artefact.
+Pipeline validation and indicator calibration are in Appendix D.
 
-![Level-matched monitoring (emulator; four policies). Top: CV AUROC of level + trend, + calibrated EWS, EWS only, and an oracle that knows the poisoning rate. Bottom: ΔAUROC from adding each EWS (95% bootstrap CI); dashed: H4 margin ±0.02.](figures/fig2b_monitor_matched.png){width=100%}
+**Unmatched design (as preregistered).** Level and trend alone separate TOWARD from null segments almost perfectly
+(CV AUROC 0.97–1.00), so H4 passes trivially and is uninformative.
 
+**Level-matched design (Fig. 4).** After matching, level and trend are uninformative (AUROC ≈ 0.50) while the oracle
+reaches 0.87–1.00 at leads of 25–50 rounds: the hidden driver carries information that is not in level or trend.
+Calibrated indicators alone reach 0.43–0.58 with no consistent sign across leads or policies. Their incremental value
+over level + trend ranged from −0.17 to +0.05 AUROC; with the cluster bootstrap, CIs are about ±0.05–0.06 and no
+calibrated indicator significantly helps, and with the refit bootstrap (training variability included) every interval
+contains zero but spans roughly ±0.08–0.12. H4 is therefore *not falsified* for the calibrated indicators, but
+equivalence within 0.02 is not established and gains of up to ≈0.1 AUROC cannot be excluded. The preregistered *raw*
+variance indicator formally fails H4 for Gemma at lead 50 (+0.099 [+0.045, +0.149]); its calibrated counterpart does
+not (+0.039 [−0.013, +0.089]), consistent with an indicator artefact. Matching reuses null runs (e.g. 239 matched
+pairs drew on 96 distinct null runs for Gemma at lead 25), which the cluster bootstrap accounts for. We
+conclude that **the tested indicators showed no consistent incremental discrimination**; this is not an
+information-theoretic statement about the defender's observations, and we did not evaluate prospective alarms
+(run-level false alarms and lead time). The monitoring emulations used pooled policies, which §4.3 shows can distort
+dynamics near threshold.
 
-## 4.6 Exploratory evidence on time-to-takeover (withdrawn and downgraded claims)
-In the Ashery Claude archive, a censored survival fit strongly prefers a threshold law over no-threshold dilution
-(ΔAIC 38; p_c = 0.156 [0.144, 0.162]); time-to-takeover rises steeply near the threshold (restricted mean to 800
-interactions: 202 at cm 5, 464 at cm 4, 753 at cm 3). We initially reported γ = 0.53 as evidence for saddle-node
-scaling (γ = ½). **We withdraw this**: parameter recovery shows the estimator returns 0.58–0.70 on emulators with known
-saddle-nodes, exact Qwen/Gemma policies give γ ≈ 0.86/1.05, and large-N simulations show no single exponent. Details: Fig. 5 (appendix). In the same archive, Llama-3-70B (N = 48) holds its convention without adversaries but tips with
-a single committed agent (p = 0.02) in 16/21 runs, with nearly flat time-to-tip across 1–6 committed agents — its threshold lies
-below the tested range, so critical mass also varies by an order of magnitude across models. We also
-withdraw an earlier "less excess variance before tips" result, which came from the uncalibrated indicator.
+![**Figure 4.** Level-matched monitoring (emulation, N = 48; four policies). *Top:* CV AUROC of level + trend,
+level + trend + calibrated indicators, indicators only, and an oracle that knows the poisoning rate. *Bottom:* ΔAUROC
+from adding each indicator (95% cluster-bootstrap CI over connected components of matched pairs); dashed lines mark the H4
+margin ±0.02.](figures/fig2b_monitor_matched.png){width=100%}
 
-# 5. Discussion
+# 5. Discussion and Limitations
 
-**For anyone estimating swarm vulnerability.** (1) The policy-following assumption behind population emulators held
-for 121k live decisions — emulators are a sound tool *if built per context*. (2) Pooling over contexts preserves the
-average threshold but misrepresents uncertainty near it; smoothing sampled policies systematically overstates
-vulnerability. Use per-context, unsmoothed (or logprob) policies and propagate uncertainty by parametric bootstrap.
-(3) Critical mass is a property of the (population, target) pair, not of the population: safety margins must be
-computed for the target behaviour an adversary would push, and the easiest target can need several times fewer agents.
-(4) Check that the convention is stable with no adversary before quoting a critical mass.
+**For forecasting swarm vulnerability.** (1) For this sampled API model, live decisions track the extracted policy
+closely enough that the critical-mass forecast is essentially unchanged; this is a check of one model and one prompt,
+not a general guarantee. (2) The decisive errors were in *how* the policy was used: averaging transition policies across
+contexts produced a confidently wrong, too-sharp transition, and posterior-mean smoothing at small sample sizes made
+populations look easier to take over. Forecasts should be target-conditional, the estimator's bias and coverage should
+be checked against a known policy, and uncertainty should be propagated in a way that can represent unseen
+transitions. (3) Critical mass is a property of the (population, target) pair [1, 3]; the forecast that matters is for
+the target an adversary would push.
 
-**For monitoring.** Generic critical-slowing-down indicators should not be marketed as content-agnostic takeover
-detectors: even with calibration and level matching they recovered essentially none of the information an oracle
-shows exists. Monitoring the population's state and its trend is the stronger default; detecting the *driver* (e.g.,
-log integrity, forged-record checks) is where the remaining information lies.
+**For monitoring.** The tested indicators did not add discrimination beyond population state and trend; the oracle
+result points to the driver itself (e.g., integrity checks on agent memories) as the more promising signal.
 
-**Limitations.** One API model live; N = 24; 4–8 populations per level (100 requests/min account limit); sampled
-policies for DeepSeek; forced-prefix logprobs for local models (exact for the two-answer policy only); reasoning
-disabled; a single memory length and temperature; an abstract coordination game (no claim about the Hugging Face
-incident beyond motivation); monitoring evaluated in emulation; preregistered PIs used biased Jeffreys draws.
+### Limitations
+
+*Scope.* One live API model; N = 24 live (N = 48 in monitoring emulations); 4–8 populations per level (100 requests/min
+quota); one abstract coordination game, memory length, temperature and label set; reasoning disabled. No claim about
+the Hugging Face incident beyond motivation. *Measurement.* DeepSeek policies are sampled; local policies are exact only
+for the forced-prefix two-answer policy of specific 4-bit builds. *Inference.* Preregistered PIs used biased Jeffreys
+draws; H1′ and H4 are weak; Test 1 pair allocation was unbalanced across levels; per-pair post-hoc analyses used
+extraction samples partly collected after Test 1 (independent of its outcomes). The policy-following check aggregates
+over option order in its primary analysis and cannot establish independence between calls. *Monitoring* is
+retrospective, emulated, with pooled policies and one driver.
 
 # 6. Conclusion
 
-Population emulators of LLM agents can be faithful — live agents follow their extracted policies — but only when built
-per context and estimated without smoothing; otherwise they misstate exactly the quantity overseers need near tipping
-points. Adversary target choice changes the critical mass several-fold across four models, and a token-conditional
-emulator predicted it prospectively. Generic early-warning signals did not help a monitor beyond the state itself.
+Prospective tests separate what an emulator gets right from what it gets wrong. For one API model, live agents tracked
+their extracted policy closely enough that the critical-mass forecast was unchanged, yet a forecast built from a pooled
+policy failed and had no skill, while a target-conditional forecast confirmed a large asymmetry. Exact policies trace
+the failure to aggregation across contexts and to biased small-sample estimators. Early-warning indicators of critical
+slowing down did not add discrimination in our emulations. Forecasts of swarm vulnerability should be target-specific,
+estimator-checked, and tested prospectively. Next steps are a calibration-sized forecasting benchmark on fresh targets
+and models, active allocation of API queries to the states that most influence the forecast, single-agent probes that
+predict population critical mass, and prospective alarm evaluation.
+
+# Code and Data
+
+- **Code repository:** <https://github.com/sharath-sms/Swarm-Alignment-Hackathon-Apart-Research> (environment
+  `swarm_ews/envs/naming_game.py`, emulator `swarm_ews/emulator.py`, analyses in `scripts/`, tests in `tests/`).
+- **Data:** a sanitized decision-level dataset of all live decisions and extraction samples
+  (`results/decisions/deepseek_decisions.csv.gz`: pair, option order, memory state, choice; no prompts or responses) lets
+  §4.1 be rerun without the API cache; extracted and exact policies, predictions, run records and analysis outputs are in
+  `results/`. Ashery et al. [1] data used under MIT licence.
+- **Preregistrations:** documents and SHA-256 hashes are available from the author.
+
+# Author Contributions
+
+S.M.S. conceived the project, designed and ran all experiments, performed the analysis and wrote the report.
 
 # References
-Ashery, Aiello & Baronchelli (2025) Sci. Adv. 11:eadu9368 · Flint, Aiello, Pastor-Satorras & Baronchelli (2026a) PNAS
-123:e2531697123 · Flint et al. (2026b) arXiv 2609.25194 · Passaro et al. (2026) arXiv 2610.31165 · De Marzo et al.
-(2026) arXiv 2605.10721 · De Nobili et al. (2026) arXiv 2605.10528; arXiv 2608.02178 · Xie et al. (2011) Phys. Rev. E
-84:011130 · Centola et al. (2018) Science 360:1116 · Scheffer et al. (2009) Nature 461:53 · Dakos et al. (2012) PLoS ONE
-7:e41010 · Boettiger & Hastings (2012) Proc. R. Soc. B 279:4734 · Bury et al. (2021) PNAS 118:e2106140118 · Hammond et
-al. (2025) arXiv 2502.14143 · Makins et al. (2026) arXiv 2607.07368 · METR (2026) Hugging Face incident investigation.
 
-# Appendix A. Limitations and Dual-Use / Ethical Considerations (required)
-**Dual use.** We show that the choice of target convention changes the number of compromised agents needed, and that
-memory poisoning tips populations. An attacker could use this to pick easier targets. We judge marginal uplift low:
-the setting is an abstract coordination game, convention-dependence of critical mass is already published, and the
-practical findings are defensive (how to estimate vulnerability correctly; what monitors do and do not work). We release
-a research simulator, not attack tooling.
-**Limitations.** See §5. Additionally: emulator-based monitoring is not confirmed live; the Claude analysis reuses
-public data that informed our hypotheses; per-pair post-hoc analyses (§4.2) used extraction samples partly collected
-after test 1 (independent of its outcomes).
-**Research integrity.** All failed preregistered predictions (H1 in test 1; P5; raw-variance H4 for Gemma) and
-withdrawn claims (γ = ½; reduced pre-tip variance) are reported. An independent internal critique
-and our responses are available from the author.
-**Data and ethics.** No human subjects. Ashery et al. data used under MIT licence; the Flint et al. group-size repository
-(no licence file) was not used. All API calls are cached for reproducibility (the provider exposes no seeds).
-**AI assistance.** Claude was used for literature search, coding, analysis and drafting; the author is responsible for
-all content.
+1. Ashery, A. F., Aiello, L. M., & Baronchelli, A. (2025). Emergent social conventions and collective bias in LLM
+   populations. *Science Advances*, 11, eadu9368.
+2. Flint, A., Aiello, L. M., Pastor-Satorras, R., & Baronchelli, A. (2026). Group size effects and collective
+   misalignment in LLM multi-agent systems. *Proceedings of the National Academy of Sciences*, 123, e2531697123.
+3. Flint, A., Aiello, L. M., Constantino, S. M., Pastor-Satorras, R., & Baronchelli, A. (2026). Indirect tipping: a
+   social attack surface in AI agent populations. arXiv:2609.25194.
+4. Passaro, Flint, A., Pastor-Satorras, R., Baronchelli, A., & Aiello, L. M. (2026). Network topology shapes consensus
+   and vulnerability in LLM populations. arXiv:2610.31165.
+5. De Marzo, G., Bellina, A., Castellano, C., Priesemann, V., & Garcia, D. (2026). Conformity generates collective
+   misalignment in AI agents societies. arXiv:2605.10721.
+6. De Nobili, C., et al. (2026). Collective alignment in LLM multi-agent systems: disentangling bias from cooperation
+   via statistical physics. arXiv:2605.10528.
+7. De Nobili, C., Iyer, V., Codello, A., & Burioni, R. (2026). Microscopic dynamics of consensus formation in
+   multi-agent LLM naming games. arXiv:2608.02178.
+8. Xie, J., Sreenivasan, S., Korniss, G., Zhang, W., Lim, C., & Szymanski, B. K. (2011). Social consensus through the
+   influence of committed minorities. *Physical Review E*, 84, 011130.
+9. Centola, D., Becker, J., Brackbill, D., & Baronchelli, A. (2018). Experimental evidence for tipping points in social
+   convention. *Science*, 360, 1116–1119.
+10. Scheffer, M., et al. (2009). Early-warning signals for critical transitions. *Nature*, 461, 53–59.
+11. Dakos, V., et al. (2012). Methods for detecting early warnings of critical transitions in time series illustrated
+    using simulated ecological data. *PLoS ONE*, 7, e41010.
+12. Boettiger, C., & Hastings, A. (2012). Early warning signals and the prosecutor's fallacy. *Proceedings of the Royal
+    Society B*, 279, 4734–4739.
+13. Bury, T. M., et al. (2021). Deep learning for early warning signals of tipping points. *Proceedings of the National
+    Academy of Sciences*, 118, e2106140118.
+14. Hammond, L., Chan, A., Clifton, J., et al. (2025). Multi-agent risks from advanced AI. arXiv:2502.14143.
+15. Makins, O., Angelini, O., Shams, Z., & Phuong, M. (2026). Multi-agent AI control: distributed attacks hamper
+    per-instance monitors. arXiv:2607.07368.
+16. METR (2026). OpenAI–Hugging Face incident investigation. https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/
 
-# Appendix B. Supplementary figure
-See Fig. 5 (exploratory Claude-archive analysis).
+# Appendix
 
-![Claude archive (exploratory). a: censored AFT fits; b: profile likelihood of γ; c: parameter recovery at the archive design.](figures/fig3b_scaling_v2.png){width=100%}
+## A. Exploratory analyses: withdrawn and downgraded claims
 
-# Appendix C. Pre-sprint vs sprint work
-All code, data collection and analysis were done during the sprint (Nov 6–8, 2026). Pre-existing: the public Ashery et
-al. dataset and code (MIT), whose prompt we adapted.
+In the Ashery et al. Claude archive [1], a censored survival fit strongly prefers a threshold law over no-threshold
+dilution (ΔAIC = 38; p~c~ = 0.156 [0.144, 0.162]), and time-to-takeover rises steeply near the threshold (restricted
+mean to 800 interactions: 202 at c = 5, 464 at c = 4, 753 at c = 3). We initially reported an exponent γ = 0.53 as
+evidence for saddle-node scaling (γ = ½). **We withdraw this claim:** parameter recovery shows that the estimator
+returns 0.58–0.70 on emulators with known saddle-nodes, exact Qwen/Gemma policies give γ ≈ 0.86/1.05, and large-N
+simulations show no single exponent (Fig. 5). In the same archive, Llama-3-70B (N = 48) holds its convention without
+adversaries but tips with a single committed agent (p = 0.02) in 16/21 runs; its threshold lies below the tested range.
+We also withdraw an earlier "less excess variance before tips" result, which came from the uncalibrated variance
+indicator.
+
+![**Figure 5.** Claude archive (exploratory). *a:* censored accelerated-failure-time fits; *b:* profile likelihood of
+γ; *c:* parameter recovery at the archive design.](figures/fig3b_scaling_v2.png){width=100%}
+
+## B. Dual-use and ethical considerations
+
+**Dual use.** Target choice changes the number of compromised agents required, and memory poisoning tips populations;
+an attacker could use this to choose easier targets. We judge the marginal uplift low: the setting is an abstract
+coordination game, convention dependence of critical mass is already published [1, 3], and the practical findings are
+defensive (how to forecast vulnerability and check forecasts). We release a research simulator, not attack tooling.
+**Data and ethics.** No human subjects were involved. The Flint et al. group-size repository (no licence file) was not
+used.
+
+## C. Research integrity
+
+All failed preregistered predictions (H1 in Test 1; P5; raw-variance H4 for Gemma) and withdrawn claims (γ = ½; reduced
+pre-tip variance; an earlier uncalibrated "statistically indistinguishable" agreement claim) are reported. An
+independent internal critique, an external review and our responses are available from the author. All code, data
+collection and analysis were done during the sprint (6–8 November 2026); the only pre-existing assets are the public
+Ashery et al. dataset and code (MIT), whose prompt we adapted.
+
+## D. Monitoring pipeline validation
+
+**Pipeline validation.** On synthetic systems the pipeline detects a fold against a mean-drift null (AUROC 0.95) and
+does not fire on mean drift alone (0.54). A preregistered check (P5: a level-only baseline cannot separate fold from
+mean drift) **failed** (0.62). The raw binomial-normalised variance is biased on pure noise when the mean moves
+(Kendall τ up to +0.4–0.7), so we recalibrated it with surrogates; residual bias remains when the mean accelerates
+faster than the detrending window, i.e. just before a tip.
+
+# LLM Usage Statement
+
+Claude was used for literature search, coding, analysis, drafting and editing of this report. All results and claims
+were checked by the author against the experiment outputs, and the author takes full responsibility for the content.

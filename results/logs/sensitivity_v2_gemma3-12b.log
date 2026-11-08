@@ -1,0 +1,6 @@
+gemma3-12b: truth p_c = 0.3102
+gemma3-12b K=  6: mle bias -0.0007 rmse 0.0225 | jeffreys bias -0.1117 rmse 0.1122 | laplace bias -0.1982 rmse 0.1984
+gemma3-12b K= 12: mle bias +0.0063 rmse 0.0193 | jeffreys bias -0.0514 rmse 0.0520 | laplace bias -0.1072 rmse 0.1075 | coverage90 {'mle_boot': 0.8, 'jeffreys_post': 0.0}
+gemma3-12b K= 24: mle bias +0.0012 rmse 0.0074 | jeffreys bias -0.0322 rmse 0.0328 | laplace bias -0.0530 rmse 0.0532
+gemma3-12b K= 48: mle bias +0.0007 rmse 0.0053 | jeffreys bias -0.0169 rmse 0.0182 | laplace bias -0.0320 rmse 0.0325 | coverage90 {'mle_boot': 1.0, 'jeffreys_post': 0.5333333333333333}
+gemma3-12b K=120: mle bias +0.0006 rmse 0.0035 | jeffreys bias -0.0048 rmse 0.0061 | laplace bias -0.0126 rmse 0.0135

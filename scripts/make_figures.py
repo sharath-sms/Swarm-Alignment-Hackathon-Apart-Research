@@ -91,29 +91,30 @@ def fig3():
 
 
 def fig4():
+    """Left: balanced-design estimator study (mean estimate / truth, error bar = SD across 30 replicates / truth).
+    Right: exact per-pair critical masses with Monte Carlo SD (8 independent seed sets)."""
     fig, ax = plt.subplots(1, 2, figsize=(7.4, 3.0), gridspec_kw={"width_ratios": [1.2, 1]})
-    a = ax[0]
-    for name, c, lab in (("qwen3-8b", BLUE, "Qwen3-8B"), ("gemma3-12b", ORANGE, "Gemma-3-12B"), ("mistral-7b", AQUA, "Mistral-7B")):
-        r = json.loads(Path(f"results/sensitivity/{name}.json").read_text()); Ks = sorted(int(k) for k in r["sampling"])
-        truth = r["pooled"]["p_c"]
+    a = ax[0]; models = (("qwen3-8b", BLUE, "Qwen3-8B"), ("gemma3-12b", ORANGE, "Gemma-3-12B"), ("mistral-7b", AQUA, "Mistral-7B"))
+    for mi, (name, c, lab) in enumerate(models):
+        r = json.loads(Path(f"results/sensitivity/v2_{name}.json").read_text()); Ks = sorted(int(k) for k in r["K"]); t = r["truth_pc"]
         for est, ls, mk in (("mle", "-", "o"), ("jeffreys", "--", "s")):
-            v = np.array([r["sampling"][str(K)][f"pooled_pc_{est}"] for K in Ks]) / truth
-            a.plot(Ks, v[:, 1], color=c, ls=ls, marker=mk, ms=4, mec="white", label=f"{lab}, {'MLE' if est=='mle' else 'Jeffreys-smoothed'}")
-            a.fill_between(Ks, v[:, 0], v[:, 2], color=c, alpha=0.12, lw=0)
-    a.axhline(1, color=INK2, lw=1); a.set_xscale("log"); a.set_xticks([4, 8, 16, 48, 128], ["4", "8", "16", "48", "128"])
-    a.set_xlabel("samples per memory state (K)"); a.set_ylabel("estimated p_c / true p_c")
-    a.set_title("Policy-estimation bias in emulator critical mass", fontsize=9, loc="left", color=INK); a.legend(fontsize=6.5)
+            m = np.array([r["K"][str(K)][est]["mean"] for K in Ks]) / t
+            e = np.sqrt(np.maximum(np.array([r["K"][str(K)][est]["rmse"] ** 2 - r["K"][str(K)][est]["bias"] ** 2 for K in Ks]), 0)) / t
+            xs = np.array(Ks) * (1 + 0.04 * (mi - 1))
+            a.errorbar(xs, m, yerr=e, color=c, ls=ls, marker=mk, ms=4, mec="white", lw=1.6, elinewidth=1, capsize=0,
+                       label=f"{lab}, {'MLE' if est == 'mle' else 'Jeffreys'}")
+    a.axhline(1, color=INK2, lw=1); a.set_xscale("log"); a.set_xticks([6, 12, 24, 48, 120], ["6", "12", "24", "48", "120"])
+    a.set_xlabel("samples per memory state (K, balanced over pairs)"); a.set_ylabel("estimated p_c / true p_c")
+    a.set_title("Estimator bias in emulator critical mass", fontsize=9, loc="left", color=INK); a.legend(fontsize=6, ncol=1)
     b = ax[1]; pairs = ["MQ", "YX", "FJ", "JF", "XY", "QM"]; x = np.arange(len(pairs)); w = 0.27
-    for k, (name, c, lab) in enumerate((("qwen3-8b", BLUE, "Qwen3-8B"), ("gemma3-12b", ORANGE, "Gemma-3-12B"), ("mistral-7b", AQUA, "Mistral-7B"))):
-        r = json.loads(Path(f"results/sensitivity/{name}.json").read_text())
-        b.bar(x + (k - 1) * w, [r["per_pair"][p]["p_c"] for p in pairs], width=w - 0.03, color=c, label=lab)
+    mc = json.loads(Path("results/sensitivity/pc_mc_uncertainty.json").read_text())
+    for k, (name, c, lab) in enumerate(models):
+        b.bar(x + (k - 1) * w, [mc[name][p]["mean"] for p in pairs], width=w - 0.03, color=c, label=lab,
+              yerr=[2 * mc[name][p]["sd"] for p in pairs], error_kw=dict(elinewidth=0.8, ecolor=INK2))
     b.set_xticks(x, [f"{p[0]}→{p[1]}" for p in pairs]); b.set_ylabel("critical mass p_c (exact policy)")
     b.set_xlabel("established → pushed word"); b.legend(fontsize=7)
     b.set_title("Critical mass depends on the target", fontsize=9, loc="left", color=INK)
     fig.tight_layout(); fig.savefig(OUT / "fig4_sensitivity.pdf"); fig.savefig(OUT / "fig4_sensitivity.png", dpi=200)
-
-
-
 
 def fig5():
     M, N = "deepseek-v4-flash", 24

@@ -1,4 +1,4 @@
-"""Fig 2b: level-matched monitoring (scripts/monitor_v2.py outputs). Top row: CV AUROC vs lead on the level-matched
+"""Fig 2b: level-matched monitoring (scripts/monitor_v3.py outputs; cluster-bootstrap CIs). Top row: CV AUROC vs lead on the level-matched
 sample. Bottom row: Delta CV-AUROC from adding one calibrated EWS indicator to level+trend, matched vs original
 (unmatched) design, with paired-bootstrap 95% CIs; dashed lines = preregistered H4 margin +/-0.02."""
 import json
@@ -20,8 +20,8 @@ NAMES = {"best_response": "Best-response reference", "deepseek-v4-flash": "DeepS
 
 
 def main(names):
-    R = [(n, json.loads(Path(f"results/emulator/monitor_v2_{n}.json").read_text())) for n in names
-         if Path(f"results/emulator/monitor_v2_{n}.json").exists()]
+    R = [(n, json.loads(Path(f"results/emulator/monitor_v3_{n}.json").read_text())) for n in names
+         if Path(f"results/emulator/monitor_v3_{n}.json").exists()]
     fig, ax = plt.subplots(2, len(R), figsize=(2.1 * len(R) + 2.2, 4.8), sharey="row", squeeze=False)
     for j, (n, r) in enumerate(R):
         a = ax[0, j]; M = r["matched"]

@@ -1,0 +1,81 @@
+{
+ "estimand": "decision-weighted mean squared difference over (pair,state) cells with >=2 obs per side",
+ "cells": 1691,
+ "live_decisions": 120575,
+ "MS": -2.7254308885099173e-05,
+ "MS_se_jackknife": 0.00029888477473601733,
+ "RMS": 0.0,
+ "signed_mean_diff": 0.002624166723545605,
+ "MS_ci95": [
+  -0.0006130684673676931,
+  0.0005585598495974948
+ ],
+ "RMS_upper95": 0.02363387081282909,
+ "reference_test": {
+  "cells": 998,
+  "G": 680.2385009960286,
+  "p_independent_bernoulli": 0.005988023952095809
+ },
+ "power_exact_shift": {
+  "0.0": {
+   "reject_rate": 0.045,
+   "realised_weighted_abs_shift": 0.0
+  },
+  "0.01": {
+   "reject_rate": 0.94,
+   "realised_weighted_abs_shift": 0.009999999999999998
+  },
+  "0.02": {
+   "reject_rate": 1.0,
+   "realised_weighted_abs_shift": 0.019999999999999997
+  },
+  "0.03": {
+   "reject_rate": 1.0,
+   "realised_weighted_abs_shift": 0.03000000000000001
+  },
+  "0.05": {
+   "reject_rate": 1.0,
+   "realised_weighted_abs_shift": 0.05000000000000001
+  }
+ },
+ "coverage": {
+  "0.0": {
+   "nominal": 0.95,
+   "covered": "60/60",
+   "rate": 1.0,
+   "clopper_pearson_95": [
+    0.9403705077138331,
+    1.0
+   ]
+  },
+  "0.02": {
+   "nominal": 0.95,
+   "covered": "60/60",
+   "rate": 1.0,
+   "clopper_pearson_95": [
+    0.9403705077138331,
+    1.0
+   ]
+  }
+ },
+ "plugin_sensitivity": {
+  "pooled": {
+   "pc_extraction": 0.14607418111750936,
+   "pc_hybrid_live": 0.14583333333330853,
+   "max_abs_dphi": 0.0175,
+   "states_replaced": 446
+  },
+  "push_Q (MQ)": {
+   "pc_extraction": 0.18419003115262614,
+   "pc_hybrid_live": 0.18215090090087996,
+   "max_abs_dphi": 0.0625,
+   "states_replaced": 334
+  },
+  "push_M (QM)": {
+   "pc_extraction": 0.11951754385958564,
+   "pc_hybrid_live": 0.10642717497553499,
+   "max_abs_dphi": 0.30500000000000005,
+   "states_replaced": 302
+  }
+ }
+}
