@@ -1,0 +1,9 @@
+adaption>=0.19
+numpy
+pandas
+scipy
+scikit-learn
+matplotlib
+pyyaml
+python-dotenv
+tqdm
