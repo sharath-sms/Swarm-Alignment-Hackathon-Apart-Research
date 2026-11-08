@@ -1,6 +1,11 @@
 .env
+.env.example
 .venv/
 __pycache__/
 *.pyc
+data/raw/
+data/cache/
+results/tmp/
 .ipynb_checkpoints/
 .DS_Store
+research/
