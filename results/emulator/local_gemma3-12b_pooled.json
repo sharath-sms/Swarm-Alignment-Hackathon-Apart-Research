@@ -1,0 +1,298 @@
+{
+ "policy": "local_gemma3-12b_pooled",
+ "qcrit": {
+  "N": 48,
+  "q": [
+   0.02,
+   0.04,
+   0.06,
+   0.08,
+   0.1,
+   0.12,
+   0.14,
+   0.16,
+   0.18,
+   0.2,
+   0.22,
+   0.24,
+   0.26,
+   0.28,
+   0.3,
+   0.32,
+   0.34,
+   0.36,
+   0.38,
+   0.4,
+   0.42,
+   0.44,
+   0.46,
+   0.48,
+   0.5,
+   0.52,
+   0.54,
+   0.56,
+   0.58,
+   0.6
+  ],
+  "flip": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.1,
+   0.45,
+   0.95,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "q_c": 0.302
+ },
+ "monitor_offline": {
+  "lead10": {
+   "n_toward": 150,
+   "auroc": {
+    "AWAY": {
+     "var": 0.928,
+     "ac1": 0.423,
+     "level": 1.0,
+     "trend": 1.0,
+     "oracle": 1.0
+    },
+    "STOPSHORT": {
+     "var": 0.509,
+     "ac1": 0.48,
+     "level": 1.0,
+     "trend": 1.0,
+     "oracle": 1.0
+    },
+    "STAT": {
+     "var": 0.741,
+     "ac1": 0.431,
+     "level": 1.0,
+     "trend": 0.998,
+     "oracle": 1.0
+    },
+    "POOLED": {
+     "var": 0.733,
+     "ac1": 0.443,
+     "level": 1.0,
+     "trend": 0.999,
+     "oracle": 1.0
+    }
+   },
+   "incremental": {
+    "AWAY": {
+     "level_trend": 1.0,
+     "plus_ews": 1.0,
+     "ews_only": 0.928
+    },
+    "STOPSHORT": {
+     "level_trend": 1.0,
+     "plus_ews": 1.0,
+     "ews_only": 0.55
+    },
+    "STAT": {
+     "level_trend": 1.0,
+     "plus_ews": 0.999,
+     "ews_only": 0.765
+    },
+    "POOLED": {
+     "level_trend": 1.0,
+     "plus_ews": 1.0,
+     "ews_only": 0.741
+    }
+   }
+  },
+  "lead25": {
+   "n_toward": 150,
+   "auroc": {
+    "AWAY": {
+     "var": 0.929,
+     "ac1": 0.422,
+     "level": 1.0,
+     "trend": 1.0,
+     "oracle": 1.0
+    },
+    "STOPSHORT": {
+     "var": 0.541,
+     "ac1": 0.484,
+     "level": 0.999,
+     "trend": 0.999,
+     "oracle": 1.0
+    },
+    "STAT": {
+     "var": 0.804,
+     "ac1": 0.406,
+     "level": 0.989,
+     "trend": 0.991,
+     "oracle": 1.0
+    },
+    "POOLED": {
+     "var": 0.767,
+     "ac1": 0.436,
+     "level": 0.996,
+     "trend": 0.997,
+     "oracle": 1.0
+    }
+   },
+   "incremental": {
+    "AWAY": {
+     "level_trend": 1.0,
+     "plus_ews": 1.0,
+     "ews_only": 0.926
+    },
+    "STOPSHORT": {
+     "level_trend": 1.0,
+     "plus_ews": 1.0,
+     "ews_only": 0.576
+    },
+    "STAT": {
+     "level_trend": 0.992,
+     "plus_ews": 0.994,
+     "ews_only": 0.812
+    },
+    "POOLED": {
+     "level_trend": 0.997,
+     "plus_ews": 0.997,
+     "ews_only": 0.77
+    }
+   }
+  },
+  "lead50": {
+   "n_toward": 150,
+   "auroc": {
+    "AWAY": {
+     "var": 0.907,
+     "ac1": 0.376,
+     "level": 0.969,
+     "trend": 1.0,
+     "oracle": 1.0
+    },
+    "STOPSHORT": {
+     "var": 0.521,
+     "ac1": 0.464,
+     "level": 0.932,
+     "trend": 0.958,
+     "oracle": 1.0
+    },
+    "STAT": {
+     "var": 0.805,
+     "ac1": 0.36,
+     "level": 0.843,
+     "trend": 0.96,
+     "oracle": 1.0
+    },
+    "POOLED": {
+     "var": 0.758,
+     "ac1": 0.396,
+     "level": 0.915,
+     "trend": 0.974,
+     "oracle": 1.0
+    }
+   },
+   "incremental": {
+    "AWAY": {
+     "level_trend": 1.0,
+     "plus_ews": 1.0,
+     "ews_only": 0.904
+    },
+    "STOPSHORT": {
+     "level_trend": 0.964,
+     "plus_ews": 0.962,
+     "ews_only": 0.584
+    },
+    "STAT": {
+     "level_trend": 0.959,
+     "plus_ews": 0.972,
+     "ews_only": 0.812
+    },
+    "POOLED": {
+     "level_trend": 0.974,
+     "plus_ews": 0.974,
+     "ews_only": 0.762
+    }
+   }
+  },
+  "lead100": {
+   "n_toward": 150,
+   "auroc": {
+    "AWAY": {
+     "var": 0.902,
+     "ac1": 0.225,
+     "level": 0.752,
+     "trend": 0.987,
+     "oracle": 1.0
+    },
+    "STOPSHORT": {
+     "var": 0.475,
+     "ac1": 0.431,
+     "level": 0.699,
+     "trend": 0.711,
+     "oracle": 1.0
+    },
+    "STAT": {
+     "var": 0.888,
+     "ac1": 0.204,
+     "level": 0.521,
+     "trend": 0.821,
+     "oracle": 0.463
+    },
+    "POOLED": {
+     "var": 0.792,
+     "ac1": 0.268,
+     "level": 0.657,
+     "trend": 0.857,
+     "oracle": 0.821
+    }
+   },
+   "incremental": {
+    "AWAY": {
+     "level_trend": 0.979,
+     "plus_ews": 0.984,
+     "ews_only": 0.847
+    },
+    "STOPSHORT": {
+     "level_trend": 0.678,
+     "plus_ews": 0.68,
+     "ews_only": 0.564
+    },
+    "STAT": {
+     "level_trend": 0.745,
+     "plus_ews": 0.839,
+     "ews_only": 0.82
+    },
+    "POOLED": {
+     "level_trend": 0.799,
+     "plus_ews": 0.818,
+     "ews_only": 0.742
+    }
+   }
+  }
+ },
+ "monitor_tip_rounds": [
+  245.0,
+  259.0,
+  276.0
+ ]
+}

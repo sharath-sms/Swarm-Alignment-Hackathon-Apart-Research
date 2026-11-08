@@ -1,0 +1,26 @@
+[deepseek-v4-flash] N=24 p_c(flip=.5)=0.1351010101009948  1:0.00/None 2:0.00/None 3:0.34/2658.0 4:1.00/594.0 5:1.00/276.0 6:1.00/180.0 7:1.00/144.0 8:1.00/120.0 9:1.00/108.0 10:1.00/96.0 11:1.00/84.0 12:1.00/72.0
+   fits: {'DIL': (-5789.1, [2.971, 1.753]), 'CRIT': (-6333.3, [3.565, 0.145, 0.74]), 'CRIT_half': (-6097.7, [3.917, 0.16])}
+[deepseek-v4-flash] N=48 p_c(flip=.5)=0.13898953301125186  1:0.00/None 2:0.00/None 3:0.00/None 4:0.00/None 5:0.00/None 6:0.04/3072.0 7:0.73/4260.0 8:1.00/1464.0 9:1.00/816.0 10:1.00/600.0 11:1.00/480.0 12:1.00/384.0 13:1.00/336.0 14:1.00/288.0 15:1.00/264.0 16:1.00/264.0
+   fits: {'DIL': (-13172.1, [3.642, 1.802]), 'CRIT': (-14902.1, [4.247, 0.149, 0.76]), 'CRIT_half': (-13749.9, [4.655, 0.162])}
+   policy uncertainty: {'N': 24, 'n_draws': 40, 'pc': [0.1058744716183294, 0.11721517713359954, 0.13778136973178304], 'gamma': [0.7207851377439858, 0.7629232012188693, 0.8262874397189024], 'dAIC_DIL_minus_CRIThalf': [-17.923493194349795, 24.34550464675374, 97.5386892929063]}
+[deepseek-v4-flash] q_c (N=48, horizon 400) = 0.14226415094339623
+[deepseek-v4-flash] lead=10 n_toward=150
+   vs AWAY      auroc={'var': 0.788, 'ac1': 0.878, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.873}
+   vs STOPSHORT auroc={'var': 0.701, 'ac1': 0.699, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.734}
+   vs STAT      auroc={'var': 0.732, 'ac1': 0.766, 'level': 0.998, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.778}
+   vs POOLED    auroc={'var': 0.74, 'ac1': 0.781, 'level': 0.999, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.795}
+[deepseek-v4-flash] lead=25 n_toward=150
+   vs AWAY      auroc={'var': 0.795, 'ac1': 0.848, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.85}
+   vs STOPSHORT auroc={'var': 0.697, 'ac1': 0.67, 'level': 0.992, 'trend': 0.999, 'oracle': 1.0}  cv: {'level_trend': 0.999, 'plus_ews': 0.993, 'ews_only': 0.722}
+   vs STAT      auroc={'var': 0.749, 'ac1': 0.74, 'level': 0.929, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 0.999, 'ews_only': 0.767}
+   vs POOLED    auroc={'var': 0.747, 'ac1': 0.752, 'level': 0.973, 'trend': 0.999, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 0.998, 'ews_only': 0.778}
+[deepseek-v4-flash] lead=50 n_toward=150
+   vs AWAY      auroc={'var': 0.744, 'ac1': 0.809, 'level': 0.992, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.812}
+   vs STOPSHORT auroc={'var': 0.607, 'ac1': 0.665, 'level': 0.956, 'trend': 0.978, 'oracle': 1.0}  cv: {'level_trend': 0.98, 'plus_ews': 0.961, 'ews_only': 0.665}
+   vs STAT      auroc={'var': 0.7, 'ac1': 0.693, 'level': 0.778, 'trend': 0.999, 'oracle': 1.0}  cv: {'level_trend': 0.999, 'plus_ews': 0.998, 'ews_only': 0.713}
+   vs POOLED    auroc={'var': 0.683, 'ac1': 0.722, 'level': 0.908, 'trend': 0.992, 'oracle': 1.0}  cv: {'level_trend': 0.992, 'plus_ews': 0.987, 'ews_only': 0.73}
+[deepseek-v4-flash] lead=100 n_toward=150
+   vs AWAY      auroc={'var': 0.578, 'ac1': 0.718, 'level': 0.814, 'trend': 1.0, 'oracle': 0.974}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.719}
+   vs STOPSHORT auroc={'var': 0.456, 'ac1': 0.558, 'level': 0.755, 'trend': 0.737, 'oracle': 0.935}  cv: {'level_trend': 0.735, 'plus_ews': 0.716, 'ews_only': 0.574}
+   vs STAT      auroc={'var': 0.532, 'ac1': 0.617, 'level': 0.476, 'trend': 0.98, 'oracle': 0.283}  cv: {'level_trend': 0.981, 'plus_ews': 0.977, 'ews_only': 0.608}
+   vs POOLED    auroc={'var': 0.522, 'ac1': 0.63, 'level': 0.681, 'trend': 0.906, 'oracle': 0.73}  cv: {'level_trend': 0.904, 'plus_ews': 0.904, 'ews_only': 0.638}

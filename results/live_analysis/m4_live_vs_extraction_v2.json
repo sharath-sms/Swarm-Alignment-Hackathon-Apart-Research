@@ -1,0 +1,92 @@
+{
+ "n_live_decisions": 68882,
+ "by_nmin": {
+  "5": {
+   "cells": 545,
+   "live_decisions_covered": 67743,
+   "G": 431.8770077646503,
+   "df": 545,
+   "p": 0.9998817839813093,
+   "weighted_mean_abs_diff": 0.015585678995230695,
+   "weighted_mean_diff_live_minus_ext": 0.0033949975472090067
+  },
+  "20": {
+   "cells": 247,
+   "live_decisions_covered": 64803,
+   "G": 196.03475188666854,
+   "df": 247,
+   "p": 0.9927052851245469,
+   "weighted_mean_abs_diff": 0.01282412336877408,
+   "weighted_mean_diff_live_minus_ext": 0.003171792458168088
+  }
+ },
+ "top_discrepant": [
+  {
+   "pair": "QM",
+   "state": "00011",
+   "live": "317/412",
+   "ext": "15/24"
+  },
+  {
+   "pair": "MQ",
+   "state": "00101",
+   "live": "39/738",
+   "ext": "3/24"
+  },
+  {
+   "pair": "MQ",
+   "state": "00001",
+   "live": "45/2654",
+   "ext": "0/24"
+  },
+  {
+   "pair": "QM",
+   "state": "00101",
+   "live": "36/436",
+   "ext": "0/24"
+  },
+  {
+   "pair": "QM",
+   "state": "00112",
+   "live": "151/257",
+   "ext": "11/24"
+  },
+  {
+   "pair": "QM",
+   "state": "01010",
+   "live": "30/358",
+   "ext": "0/24"
+  },
+  {
+   "pair": "MQ",
+   "state": "00011",
+   "live": "444/712",
+   "ext": "14/24"
+  },
+  {
+   "pair": "MQ",
+   "state": "00110",
+   "live": "27/322",
+   "ext": "0/24"
+  },
+  {
+   "pair": "QM",
+   "state": "00001",
+   "live": "60/2060",
+   "ext": "1/24"
+  },
+  {
+   "pair": "MQ",
+   "state": "01011",
+   "live": "103/257",
+   "ext": "12/24"
+  }
+ ],
+ "per_run_prediction_MLE": {
+  "n": 35,
+  "brier_pooled": 0.22465079365079366,
+  "brier_pair": 0.09597142857142857,
+  "logloss_pooled": 0.806586660152915,
+  "logloss_pair": 0.40056038765227997
+ }
+}

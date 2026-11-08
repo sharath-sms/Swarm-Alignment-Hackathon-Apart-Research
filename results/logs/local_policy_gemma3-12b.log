@@ -1,0 +1,14 @@
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 3051.60it/s]
+gemma3-12b pair=QM order=0 done (255s) min mass on 2 answers=1.000
+gemma3-12b pair=QM order=1 done (559s) min mass on 2 answers=1.000
+gemma3-12b pair=MQ order=0 done (874s) min mass on 2 answers=1.000
+gemma3-12b pair=MQ order=1 done (1193s) min mass on 2 answers=1.000
+gemma3-12b pair=XY order=0 done (1525s) min mass on 2 answers=1.000
+gemma3-12b pair=XY order=1 done (1844s) min mass on 2 answers=1.000
+gemma3-12b pair=YX order=0 done (2164s) min mass on 2 answers=1.000
+gemma3-12b pair=YX order=1 done (2485s) min mass on 2 answers=1.000
+gemma3-12b pair=FJ order=0 done (2801s) min mass on 2 answers=1.000
+gemma3-12b pair=FJ order=1 done (3120s) min mass on 2 answers=1.000
+gemma3-12b pair=JF order=0 done (3441s) min mass on 2 answers=1.000
+gemma3-12b pair=JF order=1 done (3761s) min mass on 2 answers=1.000
+saved gemma3-12b 3761s

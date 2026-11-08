@@ -1,0 +1,2 @@
+deepseek-v4-flash: 351 states cover 0.995 of visits; extra samples = 14040
+calls=14040 cached=40 session_spend=0.1230 ledger_total=0.2043 cap=30.0 reasoning_leaks=0 retries=30

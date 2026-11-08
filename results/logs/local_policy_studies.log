@@ -1,0 +1,80 @@
+qwen3-8b QM N=24: pc_flip=0.225, gamma=1.056, pc_fit=0.228, dAIC_DIL_minus_CRIThalf=13.798, dAIC_gamma_free_vs_half=190.363
+qwen3-8b QM N=48: pc_flip=0.237, gamma=0.940, pc_fit=0.242, dAIC_DIL_minus_CRIThalf=-70.251, dAIC_gamma_free_vs_half=374.760
+qwen3-8b QM N=96: pc_flip=0.244, gamma=0.893, pc_fit=0.247, dAIC_DIL_minus_CRIThalf=-13.222, dAIC_gamma_free_vs_half=1628.543
+qwen3-8b MQ N=24: pc_flip=0.336, gamma=1.033, pc_fit=0.347, dAIC_DIL_minus_CRIThalf=12.121, dAIC_gamma_free_vs_half=23.832
+qwen3-8b MQ N=48: pc_flip=0.349, gamma=0.838, pc_fit=0.360, dAIC_DIL_minus_CRIThalf=78.310, dAIC_gamma_free_vs_half=53.427
+qwen3-8b MQ N=96: pc_flip=0.361, gamma=0.850, pc_fit=0.366, dAIC_DIL_minus_CRIThalf=79.553, dAIC_gamma_free_vs_half=145.388
+qwen3-8b XY N=24: pc_flip=0.204, gamma=0.855, pc_fit=0.229, dAIC_DIL_minus_CRIThalf=106.831, dAIC_gamma_free_vs_half=114.327
+qwen3-8b XY N=48: pc_flip=0.220, gamma=0.864, pc_fit=0.228, dAIC_DIL_minus_CRIThalf=63.925, dAIC_gamma_free_vs_half=397.684
+qwen3-8b XY N=96: pc_flip=0.228, gamma=0.822, pc_fit=0.234, dAIC_DIL_minus_CRIThalf=252.571, dAIC_gamma_free_vs_half=1281.990
+qwen3-8b YX N=24: pc_flip=0.271, gamma=1.043, pc_fit=0.267, dAIC_DIL_minus_CRIThalf=-11.430, dAIC_gamma_free_vs_half=24.575
+qwen3-8b YX N=48: pc_flip=0.284, gamma=0.903, pc_fit=0.291, dAIC_DIL_minus_CRIThalf=56.800, dAIC_gamma_free_vs_half=193.650
+qwen3-8b YX N=96: pc_flip=0.297, gamma=0.843, pc_fit=0.300, dAIC_DIL_minus_CRIThalf=274.558, dAIC_gamma_free_vs_half=693.335
+qwen3-8b FJ N=24: pc_flip=0.224, gamma=0.888, pc_fit=0.235, dAIC_DIL_minus_CRIThalf=150.039, dAIC_gamma_free_vs_half=122.884
+qwen3-8b FJ N=48: pc_flip=0.237, gamma=0.849, pc_fit=0.247, dAIC_DIL_minus_CRIThalf=64.646, dAIC_gamma_free_vs_half=230.273
+qwen3-8b FJ N=96: pc_flip=0.247, gamma=0.839, pc_fit=0.250, dAIC_DIL_minus_CRIThalf=384.426, dAIC_gamma_free_vs_half=1288.196
+qwen3-8b JF N=24: pc_flip=0.225, gamma=0.770, pc_fit=0.254, dAIC_DIL_minus_CRIThalf=26.376, dAIC_gamma_free_vs_half=17.487
+qwen3-8b JF N=48: pc_flip=0.239, gamma=0.856, pc_fit=0.248, dAIC_DIL_minus_CRIThalf=73.214, dAIC_gamma_free_vs_half=265.390
+qwen3-8b JF N=96: pc_flip=0.249, gamma=0.817, pc_fit=0.253, dAIC_DIL_minus_CRIThalf=234.101, dAIC_gamma_free_vs_half=814.567
+qwen3-8b gamma across pairs×N: median 0.856 [10–90%: 0.820, 1.036]
+[local_qwen3-8b_pooled] q_c (N=48, horizon 400) = 0.27125
+[local_qwen3-8b_pooled] lead=10 n_toward=150
+   vs AWAY      auroc={'var': 0.916, 'ac1': 0.771, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.922}
+   vs STOPSHORT auroc={'var': 0.673, 'ac1': 0.489, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.671}
+   vs STAT      auroc={'var': 0.82, 'ac1': 0.577, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.814}
+   vs POOLED    auroc={'var': 0.803, 'ac1': 0.612, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.802}
+[local_qwen3-8b_pooled] lead=25 n_toward=150
+   vs AWAY      auroc={'var': 0.866, 'ac1': 0.758, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.886}
+   vs STOPSHORT auroc={'var': 0.616, 'ac1': 0.501, 'level': 0.997, 'trend': 0.998, 'oracle': 1.0}  cv: {'level_trend': 0.999, 'plus_ews': 0.997, 'ews_only': 0.596}
+   vs STAT      auroc={'var': 0.782, 'ac1': 0.562, 'level': 0.98, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 0.997, 'ews_only': 0.771}
+   vs POOLED    auroc={'var': 0.755, 'ac1': 0.607, 'level': 0.993, 'trend': 0.999, 'oracle': 1.0}  cv: {'level_trend': 0.999, 'plus_ews': 0.999, 'ews_only': 0.755}
+[local_qwen3-8b_pooled] lead=50 n_toward=150
+   vs AWAY      auroc={'var': 0.833, 'ac1': 0.747, 'level': 0.984, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.861}
+   vs STOPSHORT auroc={'var': 0.561, 'ac1': 0.537, 'level': 0.942, 'trend': 0.971, 'oracle': 1.0}  cv: {'level_trend': 0.971, 'plus_ews': 0.967, 'ews_only': 0.551}
+   vs STAT      auroc={'var': 0.745, 'ac1': 0.601, 'level': 0.79, 'trend': 0.987, 'oracle': 1.0}  cv: {'level_trend': 0.986, 'plus_ews': 0.981, 'ews_only': 0.735}
+   vs POOLED    auroc={'var': 0.714, 'ac1': 0.629, 'level': 0.906, 'trend': 0.986, 'oracle': 1.0}  cv: {'level_trend': 0.986, 'plus_ews': 0.983, 'ews_only': 0.728}
+[local_qwen3-8b_pooled] lead=100 n_toward=150
+   vs AWAY      auroc={'var': 0.82, 'ac1': 0.508, 'level': 0.732, 'trend': 0.996, 'oracle': 0.998}  cv: {'level_trend': 0.995, 'plus_ews': 0.994, 'ews_only': 0.803}
+   vs STOPSHORT auroc={'var': 0.478, 'ac1': 0.505, 'level': 0.696, 'trend': 0.631, 'oracle': 0.993}  cv: {'level_trend': 0.639, 'plus_ews': 0.61, 'ews_only': 0.419}
+   vs STAT      auroc={'var': 0.803, 'ac1': 0.417, 'level': 0.413, 'trend': 0.838, 'oracle': 0.08}  cv: {'level_trend': 0.834, 'plus_ews': 0.888, 'ews_only': 0.797}
+   vs POOLED    auroc={'var': 0.705, 'ac1': 0.476, 'level': 0.614, 'trend': 0.825, 'oracle': 0.691}  cv: {'level_trend': 0.823, 'plus_ews': 0.829, 'ews_only': 0.698}
+gemma3-12b QM N=24: pc_flip=0.218, gamma=1.125, pc_fit=0.211, dAIC_DIL_minus_CRIThalf=-73.793, dAIC_gamma_free_vs_half=168.203
+gemma3-12b QM N=48: pc_flip=0.225, gamma=1.045, pc_fit=0.225, dAIC_DIL_minus_CRIThalf=-222.771, dAIC_gamma_free_vs_half=598.963
+gemma3-12b QM N=96: pc_flip=0.235, gamma=0.969, pc_fit=0.234, dAIC_DIL_minus_CRIThalf=-479.901, dAIC_gamma_free_vs_half=1886.077
+gemma3-12b MQ N=24: pc_flip=0.319, gamma=1.147, pc_fit=0.325, dAIC_DIL_minus_CRIThalf=-7.047, dAIC_gamma_free_vs_half=17.787
+gemma3-12b MQ N=48: pc_flip=0.340, gamma=1.086, pc_fit=0.333, dAIC_DIL_minus_CRIThalf=-25.002, dAIC_gamma_free_vs_half=60.675
+gemma3-12b MQ N=96: pc_flip=0.349, gamma=1.017, pc_fit=0.343, dAIC_DIL_minus_CRIThalf=-83.489, dAIC_gamma_free_vs_half=395.184
+gemma3-12b XY N=24: pc_flip=0.238, gamma=0.994, pc_fit=0.251, dAIC_DIL_minus_CRIThalf=-9.907, dAIC_gamma_free_vs_half=65.014
+gemma3-12b XY N=48: pc_flip=0.257, gamma=1.138, pc_fit=0.244, dAIC_DIL_minus_CRIThalf=-188.735, dAIC_gamma_free_vs_half=301.263
+gemma3-12b XY N=96: pc_flip=0.267, gamma=0.933, pc_fit=0.266, dAIC_DIL_minus_CRIThalf=-200.621, dAIC_gamma_free_vs_half=866.819
+gemma3-12b YX N=24: pc_flip=0.273, gamma=1.058, pc_fit=0.290, dAIC_DIL_minus_CRIThalf=-8.186, dAIC_gamma_free_vs_half=39.025
+gemma3-12b YX N=48: pc_flip=0.293, gamma=0.991, pc_fit=0.297, dAIC_DIL_minus_CRIThalf=-34.351, dAIC_gamma_free_vs_half=127.536
+gemma3-12b YX N=96: pc_flip=0.304, gamma=0.942, pc_fit=0.303, dAIC_DIL_minus_CRIThalf=-76.087, dAIC_gamma_free_vs_half=671.048
+gemma3-12b FJ N=24: pc_flip=0.299, gamma=1.193, pc_fit=0.297, dAIC_DIL_minus_CRIThalf=-18.953, dAIC_gamma_free_vs_half=64.424
+gemma3-12b FJ N=48: pc_flip=0.314, gamma=1.400, pc_fit=0.280, dAIC_DIL_minus_CRIThalf=-100.768, dAIC_gamma_free_vs_half=122.893
+gemma3-12b FJ N=96: pc_flip=0.323, gamma=1.039, pc_fit=0.316, dAIC_DIL_minus_CRIThalf=-193.128, dAIC_gamma_free_vs_half=524.677
+gemma3-12b JF N=24: pc_flip=0.264, gamma=1.127, pc_fit=0.262, dAIC_DIL_minus_CRIThalf=-16.885, dAIC_gamma_free_vs_half=26.815
+gemma3-12b JF N=48: pc_flip=0.278, gamma=1.310, pc_fit=0.254, dAIC_DIL_minus_CRIThalf=-224.794, dAIC_gamma_free_vs_half=294.497
+gemma3-12b JF N=96: pc_flip=0.285, gamma=1.029, pc_fit=0.279, dAIC_DIL_minus_CRIThalf=-336.407, dAIC_gamma_free_vs_half=724.574
+gemma3-12b gamma across pairs×N: median 1.051 [10–90%: 0.960, 1.228]
+[local_gemma3-12b_pooled] q_c (N=48, horizon 400) = 0.302
+[local_gemma3-12b_pooled] lead=10 n_toward=150
+   vs AWAY      auroc={'var': 0.928, 'ac1': 0.423, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.928}
+   vs STOPSHORT auroc={'var': 0.509, 'ac1': 0.48, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.55}
+   vs STAT      auroc={'var': 0.741, 'ac1': 0.431, 'level': 1.0, 'trend': 0.998, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 0.999, 'ews_only': 0.765}
+   vs POOLED    auroc={'var': 0.733, 'ac1': 0.443, 'level': 1.0, 'trend': 0.999, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.741}
+[local_gemma3-12b_pooled] lead=25 n_toward=150
+   vs AWAY      auroc={'var': 0.929, 'ac1': 0.422, 'level': 1.0, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.926}
+   vs STOPSHORT auroc={'var': 0.541, 'ac1': 0.484, 'level': 0.999, 'trend': 0.999, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.576}
+   vs STAT      auroc={'var': 0.804, 'ac1': 0.406, 'level': 0.989, 'trend': 0.991, 'oracle': 1.0}  cv: {'level_trend': 0.992, 'plus_ews': 0.994, 'ews_only': 0.812}
+   vs POOLED    auroc={'var': 0.767, 'ac1': 0.436, 'level': 0.996, 'trend': 0.997, 'oracle': 1.0}  cv: {'level_trend': 0.997, 'plus_ews': 0.997, 'ews_only': 0.77}
+[local_gemma3-12b_pooled] lead=50 n_toward=150
+   vs AWAY      auroc={'var': 0.907, 'ac1': 0.376, 'level': 0.969, 'trend': 1.0, 'oracle': 1.0}  cv: {'level_trend': 1.0, 'plus_ews': 1.0, 'ews_only': 0.904}
+   vs STOPSHORT auroc={'var': 0.521, 'ac1': 0.464, 'level': 0.932, 'trend': 0.958, 'oracle': 1.0}  cv: {'level_trend': 0.964, 'plus_ews': 0.962, 'ews_only': 0.584}
+   vs STAT      auroc={'var': 0.805, 'ac1': 0.36, 'level': 0.843, 'trend': 0.96, 'oracle': 1.0}  cv: {'level_trend': 0.959, 'plus_ews': 0.972, 'ews_only': 0.812}
+   vs POOLED    auroc={'var': 0.758, 'ac1': 0.396, 'level': 0.915, 'trend': 0.974, 'oracle': 1.0}  cv: {'level_trend': 0.974, 'plus_ews': 0.974, 'ews_only': 0.762}
+[local_gemma3-12b_pooled] lead=100 n_toward=150
+   vs AWAY      auroc={'var': 0.902, 'ac1': 0.225, 'level': 0.752, 'trend': 0.987, 'oracle': 1.0}  cv: {'level_trend': 0.979, 'plus_ews': 0.984, 'ews_only': 0.847}
+   vs STOPSHORT auroc={'var': 0.475, 'ac1': 0.431, 'level': 0.699, 'trend': 0.711, 'oracle': 1.0}  cv: {'level_trend': 0.678, 'plus_ews': 0.68, 'ews_only': 0.564}
+   vs STAT      auroc={'var': 0.888, 'ac1': 0.204, 'level': 0.521, 'trend': 0.821, 'oracle': 0.463}  cv: {'level_trend': 0.745, 'plus_ews': 0.839, 'ews_only': 0.82}
+   vs POOLED    auroc={'var': 0.792, 'ac1': 0.268, 'level': 0.657, 'trend': 0.857, 'oracle': 0.821}  cv: {'level_trend': 0.799, 'plus_ews': 0.818, 'ews_only': 0.742}

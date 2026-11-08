@@ -1,0 +1,1 @@
+deepseek-v4-flash: states=1024 samples=8192 fails=9 | calls=8192 cached=0 session_spend=0.0720 ledger_total=0.0751 cap=30.0 reasoning_leaks=0 retries=32

@@ -1,0 +1,14 @@
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files: 100%|██████████| 9/9 [00:00<00:00, 3499.14it/s]
+qwen3-8b pair=QM order=0 done (156s) min mass on 2 answers=1.000
+qwen3-8b pair=QM order=1 done (323s) min mass on 2 answers=1.000
+qwen3-8b pair=MQ order=0 done (509s) min mass on 2 answers=1.000
+qwen3-8b pair=MQ order=1 done (696s) min mass on 2 answers=1.000
+qwen3-8b pair=XY order=0 done (889s) min mass on 2 answers=1.000
+qwen3-8b pair=XY order=1 done (1077s) min mass on 2 answers=1.000
+qwen3-8b pair=YX order=0 done (1268s) min mass on 2 answers=1.000
+qwen3-8b pair=YX order=1 done (1457s) min mass on 2 answers=1.000
+qwen3-8b pair=FJ order=0 done (1648s) min mass on 2 answers=1.000
+qwen3-8b pair=FJ order=1 done (1838s) min mass on 2 answers=1.000
+qwen3-8b pair=JF order=0 done (2030s) min mass on 2 answers=1.000
+qwen3-8b pair=JF order=1 done (2223s) min mass on 2 answers=1.000
+saved qwen3-8b 2223s

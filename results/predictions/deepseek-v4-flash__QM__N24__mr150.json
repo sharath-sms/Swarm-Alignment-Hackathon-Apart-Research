@@ -1,0 +1,64 @@
+{
+ "model": "deepseek-v4-flash__QM",
+ "N": 24,
+ "max_rounds": 150,
+ "rows": [
+  {
+   "cm": 2,
+   "p": 0.08333333333333333,
+   "n_live": 5,
+   "flip_point": 0.009,
+   "flip_PI": [
+    0.0,
+    0.5069999999999996
+   ],
+   "k_flips_95PI": [
+    0,
+    4
+   ],
+   "median_T_point": 984.0,
+   "median_T_PI": [
+    896.4,
+    1520.4
+   ]
+  },
+  {
+   "cm": 3,
+   "p": 0.125,
+   "n_live": 5,
+   "flip_point": 0.587,
+   "flip_PI": [
+    0.377625,
+    1.0
+   ],
+   "k_flips_95PI": [
+    1,
+    5
+   ],
+   "median_T_point": 936.0,
+   "median_T_PI": [
+    382.8,
+    1006.9499999999997
+   ]
+  },
+  {
+   "cm": 4,
+   "p": 0.16666666666666666,
+   "n_live": 5,
+   "flip_point": 1.0,
+   "flip_PI": [
+    1.0,
+    1.0
+   ],
+   "k_flips_95PI": [
+    5,
+    5
+   ],
+   "median_T_point": 360.0,
+   "median_T_PI": [
+    239.4,
+    468.0
+   ]
+  }
+ ]
+}

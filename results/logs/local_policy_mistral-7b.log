@@ -1,0 +1,14 @@
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files: 100%|██████████| 7/7 [00:00<00:00, 2252.41it/s]
+mistral-7b pair=QM order=0 done (196s) min mass on 2 answers=0.974
+mistral-7b pair=QM order=1 done (452s) min mass on 2 answers=0.991
+mistral-7b pair=MQ order=0 done (701s) min mass on 2 answers=0.991
+mistral-7b pair=MQ order=1 done (933s) min mass on 2 answers=0.974
+mistral-7b pair=XY order=0 done (1188s) min mass on 2 answers=0.984
+mistral-7b pair=XY order=1 done (1424s) min mass on 2 answers=0.997
+mistral-7b pair=YX order=0 done (1661s) min mass on 2 answers=0.997
+mistral-7b pair=YX order=1 done (1875s) min mass on 2 answers=0.984
+mistral-7b pair=FJ order=0 done (2089s) min mass on 2 answers=0.991
+mistral-7b pair=FJ order=1 done (2302s) min mass on 2 answers=0.990
+mistral-7b pair=JF order=0 done (2516s) min mass on 2 answers=0.990
+mistral-7b pair=JF order=1 done (2729s) min mass on 2 answers=0.991
+saved mistral-7b 2729s
