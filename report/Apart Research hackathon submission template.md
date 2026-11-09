@@ -5,23 +5,20 @@ affiliation: "Synthpop.AI"
 with: "Apart Research"
 abstract: |
   A small committed minority can tip a population of LLM agents into a new convention, an abstraction of a few
-  compromised agents hijacking a swarm's norms. Large-population estimates of the required *critical mass* rely on
-  emulators driven by policies extracted from the model, yet these forecasts have not been tested prospectively. In an
-  LLM naming game we run three preregistered live forecasting tests (DeepSeek-v4-flash; 83 populations; 146k
-  decisions) and diagnose forecast errors against exact log-probability policies of three open-weight models. (i) Live
-  decisions depart only slightly on average from the offline policy samples (RMS difference 95% upper bound 0.024,
-  interval coverage validated by simulating the whole experiment), although a model-based test detects departures in a
-  few states, and a plug-in substitution moves single-level flip probabilities by up to 0.31 near the threshold. (ii) A
-  preregistered emulator built from a policy pooled across word pairs failed (2/5 levels outside 95% predictive
-  intervals) and showed no improvement over a constant reference (Brier 0.22 vs 0.23). Exact policies show why: averaging the
-  transition policy across contexts yields a transition far sharper than the corresponding mixture of populations
-  (flip-probability error up to 0.37), and the smoothed estimators we tested bias critical mass low by up to 60% at
-  small sample sizes. (iii) A preregistered target-conditional emulator correctly predicted the direction of a large
-  target asymmetry (10/10 vs 2/10 takeovers, p = 3.6×10^−4^) and improved the Brier score to 0.09; a third, externally timestamped forecast on fresh targets passed all preregistered tests (7/8 vs 0/8
-  takeovers; Brier 0.05 vs 0.28 for a constant reference; 4/4 cells inside predictive intervals), although calibration
-  rests on few populations and one model. (iv) In emulation, surrogate-calibrated early-warning indicators showed no
-  consistent incremental discrimination once population level and trend were matched. We report all failed
-  predictions and withdrawn claims.
+  compromised agents hijacking a swarm's norms. Large-population estimates of the required critical mass rely on
+  emulators driven by policies extracted from the model, but these forecasts are rarely tested prospectively. In an LLM
+  naming game we run three preregistered live forecasting tests (DeepSeek-v4-flash; 83 populations; 146k decisions)
+  and diagnose errors against exact log-probability policies of three open-weight models. Live decisions match the
+  offline policy samples closely on average (RMS difference ≤ 0.024), although small deviations near the threshold can
+  shift individual forecasts. A forecast from a policy pooled across word pairs failed and showed no improvement over a
+  constant reference. Exact policies explain why: averaging the transition policy across contexts yields a far sharper
+  transition than the mixture of populations (flip-probability error up to 0.37), and the smoothed estimators we tested
+  bias critical mass low by up to 60% at small sample sizes, with posterior intervals that rarely cover the truth.
+  Target-conditional forecasts correctly predicted a large directional asymmetry (10/10 vs 2/10 takeovers), and a
+  third forecast, published before its runs, passed all preregistered tests on fresh targets (7/8 vs 0/8; Brier 0.05
+  vs 0.28 for a constant reference; 4/4 cells inside predictive intervals). In emulation, calibrated early-warning
+  indicators added no consistent discrimination beyond population level and trend. We report all failed predictions
+  and withdrawn claims.
 ---
 
 [^title]: Research conducted at the [Swarm Alignment Hackathon](https://apartresearch.com/sprints/swarm-alignment-2026), November 2026.
