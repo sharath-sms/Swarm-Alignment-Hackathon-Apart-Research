@@ -1,0 +1,21 @@
+{
+ "brier_emulator": 0.05206325,
+ "brier_direction_only": 0.0625,
+ "brier_loo_reference": 0.27999999999999997,
+ "ref_minus_emulator_recomputed_ci": [
+  0.098,
+  0.28
+ ],
+ "ref_minus_emulator_parametric_ci": [
+  -0.113,
+  0.28
+ ],
+ "direction_minus_emulator_recomputed_ci": [
+  -0.005,
+  0.041
+ ],
+ "direction_minus_emulator_parametric_ci": [
+  -0.005,
+  0.057
+ ]
+}

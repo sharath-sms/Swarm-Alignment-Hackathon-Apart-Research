@@ -45,8 +45,7 @@ def test_committed_majority_always_flips():
 def test_decision_dataset_present_and_consistent():
     import csv, gzip
     p = Path("results/decisions/deepseek_decisions.csv.gz")
-    if not p.exists():
-        return
+    assert p.exists(), "released decision dataset missing"
     with gzip.open(p, "rt") as fh:
         rows = list(csv.DictReader(fh))
     assert {r["source"] for r in rows} == {"extraction", "live_v1", "live_v2"}

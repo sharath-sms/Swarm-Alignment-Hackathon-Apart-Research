@@ -5,20 +5,21 @@ affiliation: "Synthpop.AI"
 with: "Apart Research"
 abstract: |
   A small committed minority can tip a population of LLM agents into a new convention, an abstraction of a few
-  compromised agents hijacking a swarm's norms. Large-population estimates of the required critical mass rely on
+  compromised agents hijacking swarm norms. Large-population estimates of the required critical mass rely on
   emulators driven by policies extracted from the model, but these forecasts are rarely tested prospectively. In an LLM
   naming game we run three preregistered live forecasting tests (DeepSeek-v4-flash; 83 populations; 146k decisions)
   and diagnose errors against exact log-probability policies of three open-weight models. Live decisions match the
-  offline policy samples closely on average (RMS difference ≤ 0.024), although small deviations near the threshold can
+  offline policy samples closely on average (RMS difference: estimated 95% upper bound 0.024), although small deviations near the threshold can
   shift individual forecasts. A forecast from a policy pooled across word pairs failed and showed no improvement over a
   constant reference. Exact policies explain why: averaging the transition policy across contexts yields a far sharper
   transition than the mixture of populations (flip-probability error up to 0.37), and the smoothed estimators we tested
   bias critical mass low by up to 60% at small sample sizes, with posterior intervals that rarely cover the truth.
   Target-conditional forecasts correctly predicted a large directional asymmetry (10/10 vs 2/10 takeovers), and a
-  third forecast, published before its runs, passed all preregistered tests on fresh targets (7/8 vs 0/8; Brier 0.05
-  vs 0.28 for a constant reference; 4/4 cells inside predictive intervals). In emulation, calibrated early-warning
-  indicators added no consistent discrimination beyond population level and trend. We report all failed predictions
-  and withdrawn claims.
+  third forecast, published before its runs on new populations of a previously explored target pair, passed its
+  preregistered tests (7/8 vs 0/8 takeovers; 4/4 cells inside predictive intervals), though a direction-only rule scores
+  almost as well (Brier 0.06 vs 0.05). In emulation, calibrated early-warning
+  indicators added no consistent discrimination beyond population level and trend. We report all failed predictions and withdrawn
+  claims.
 ---
 
 [^title]: Research conducted at the [Swarm Alignment Hackathon](https://apartresearch.com/sprints/swarm-alignment-2026), November 2026.
@@ -35,7 +36,7 @@ An overseer wants to know *how many agents an adversary must control* and *wheth
 Because live experiments are expensive, large-population answers rely on **emulators**: simulations driven by
 policies extracted from the LLM [2–4]. Prior work validated per-pair, log-probability emulators against direct
 LLM simulations [2, 3] and mapped directional, convention-dependent critical masses across models [3]. What has not
-been done is to **forecast prospectively**: freeze an emulator's numerical predictions, then test them on fresh live
+been done is to **forecast prospectively**: freeze an emulator's numerical predictions, then test them on new live
 populations, and diagnose the errors. This matters most for black-box APIs that expose no log-probabilities, where the
 policy must be estimated from samples and choices about aggregation and smoothing are unavoidable.
 
@@ -47,7 +48,7 @@ defender can query the model offline and observe the population's aggregate beha
 
 1. **Three preregistered forecasting tests.** An emulator built from a policy pooled across word pairs *failed* and
    showed no improvement over a constant reference; a target-conditional emulator correctly forecast a large
-   directional asymmetry and improved proper scores; and a third, externally timestamped forecast tested fresh targets.
+   directional asymmetry and improved proper scores; and a third, externally timestamped forecast confirmed a directional prediction on new populations.
 2. **A decision-level check of the policy-following assumption for a sampled (no-logprob) API model**, with calibrated
    inference, power analysis, and the consequence for the forecast quantity.
 3. **A controlled diagnosis of forecast error against exact policies**: aggregation across contexts versus sampling
@@ -66,7 +67,7 @@ are directional and convention-dependent across four models, forming a directed 
 convention is unstable with zero committed agents. De Marzo et al. [5] report conformity-driven misalignment and
 hysteresis; De Nobili et al. [6, 7] give statistical-physics descriptions of LLM populations. **Target dependence,
 emulator validation with log-probability policies, and the stability precondition are therefore established.** Our
-contribution is complementary: *preregistered* numerical forecasts tested on fresh live populations, a validation for
+contribution is complementary: *preregistered* numerical forecasts tested on new live populations, a validation for
 a *sampled* policy from an API without log-probabilities, and a controlled account of how estimation and aggregation
 choices propagate into critical-mass forecasts.
 
@@ -83,7 +84,7 @@ paired by a uniformly random perfect matching, and each pair plays a coordinatio
 word, −50 otherwise). An agent's prompt contains only its last five records (own word, partner's word, payoff); we
 remove the cumulative score of the original prompt so that no hidden state remains. Option order is shuffled per call,
 reasoning is disabled (0 reasoning tokens verified), and output is JSON with one resample on parse failure
-(0 unrecoverable failures in 121,423 live calls). c committed agents always play B.
+(0 unrecoverable failures in 146,097 live calls over the three tests; 121,423 in Tests 1–2). c committed agents always play B.
 
 The observable f~t~ is the fraction of non-committed agents playing B. A population **flips** if the two-round mean of
 f~t~ reaches 0.5 within 150 rounds: a *finite-horizon first-passage event* for a given N, horizon, initial state and
@@ -120,10 +121,11 @@ directional: flips(push M) > flips(push Q) at c in {3, 4} (one-sided Fisher exac
 were built from Jeffreys-Beta posterior draws of the policy, which §4.3 shows to be biased; we treat this as a
 limitation and add proper scores against baselines.
 
-**Test 3** (added after independent review) forecasts *fresh targets*, the X/Y pair in both directions, with
+**Test 3** (added after independent review) forecasts the X/Y pair in both directions on *new populations*; this pair
+was already explored post hoc in Test 1 (3 populations per direction), which motivated its selection. It uses
 target-conditional unsmoothed policies and parametric-bootstrap PIs. Its preregistration, frozen numerical predictions
-and analysis code were **pushed to the public repository before the first live population** (commit 64f280d,
-2026-11-08 19:47 UTC). Design: c in {3, 4} (the levels with the largest predicted difference between directions), 4 new
+and analysis code were **pushed to the public repository before the first live population** (commit 64f280d; GitHub
+server-side push event 2026-11-08 19:47:07 UTC). Design: c in {3, 4} (the levels with the largest predicted difference between directions), 4 new
 populations per cell, 100-round horizon. H6 (primary): the predicted-easier direction flips more often (one-sided
 Fisher); H7: the frozen predictions beat a leave-one-out constant reference in Brier score (cell-stratified paired
 bootstrap CI excludes 0); H8: all cells inside 95% PIs. A planned second live model (gemma-4-31b) was infeasible
@@ -152,9 +154,11 @@ offline samples of the same model. **Estimand:** the live-decision-weighted mean
 extracted choice probabilities over (word pair, state) cells with ≥ 2 observations per side (eligibility uses counts
 only). With a per-cell noise-corrected estimator, it is ≈ 0 (−0.00003 ± 0.0003; 1,691 cells, 120,575 decisions), i.e.
 an RMS difference with 95% upper bound 0.024. Uncertainty is a jackknife that deletes one live *population* at a time
-plus grouped deletion of extraction samples; in 60 simulated replications of the whole experiment (same design,
-visitation, stopping and selection) its 95% intervals covered the true discrepancy 60/60 times at true RMS 0 and at
-0.02 (Clopper–Pearson lower bound 0.94; the intervals are conservative). A population bootstrap with replacement, which
+plus grouped deletion of extraction samples. In 60 simulated replications of a *simplified* experiment (the real
+population design, visitation and stopping, but one policy pooled over word pairs and fixed extraction counts), its 95%
+intervals covered the realised discrepancy 60/60 times, for perturbations scaled to nominal RMS 0 and 0.02 (the realised
+decision-weighted RMS differs slightly; Clopper–Pearson lower bound 0.94). This supports the procedure in these
+simulations, not yet for the full pair-specific, adaptively extracted design. A population bootstrap with replacement, which
 we tried first, failed this check (0/40) because duplicated decisions bias the noise correction.
 
 An exploratory homogeneity test against an independent-Bernoulli reference (not modelling adaptive visitation)
@@ -212,7 +216,8 @@ even at K = 6 (bias −0.005, +0.006 and −0.001 for Qwen, Mistral and Gemma; R
 calibration (nominal 90%, 40 extraction replicates, Clopper–Pearson CIs on coverage) differed sharply. A parametric
 bootstrap that collapses counts to a single binomial per state covered the true p~c~ in 29–38/40 (K = 12) and 34–37/40
 (K = 48) replicates; a design-preserving stratified bootstrap (per pair) covered only 25–31/40 and 32–33/40, because
-two to eight samples per pair cannot represent transitions never observed; and stratified Jeffreys posterior draws
+two to eight samples per pair cannot represent transitions never observed (each interval used only 20 draws and 80
+simulated populations per threshold point, so fine differences between methods are uncertain); and stratified Jeffreys posterior draws
 covered it in 0/40 at both K. (An earlier pooled-Jeffreys check with 15 replicates gave 0% and 33–53%.) Our
 preregistered predictive intervals were built from Jeffreys draws and were therefore shifted toward a lower critical
 mass. These are evaluations of specific approximate procedures, not of smoothing or Bayesian inference in general. Unbiased
@@ -258,16 +263,20 @@ improvement over the constant reference (difference 0.015 [−0.061, 0.087]). Wi
 ![**Figure 3.** Preregistered test 2: live flip fraction (Wilson 95% CI) vs the target-conditional emulator, for both
 directions.](figures/fig5_confirmatory_v2.png){width=45%}
 
-## 4.4b Preregistered test 3: an externally timestamped forecast on fresh targets
+## 4.4b Preregistered test 3: an externally timestamped forecast on new populations
 
-The forecast was published before any live run (§3.3). On 16 fresh populations (Table 4) **all three preregistered
-hypotheses passed.** H6: the predicted-easier direction (push Y) flipped 7/8 populations vs 0/8 for push X (one-sided
-Fisher p = 7×10^−4^). H7: the frozen point predictions scored Brier 0.052 vs 0.280 for a leave-one-out constant
-reference (difference 0.228, 95% CI [0.116, 0.284]). H8: all four cells fell inside their 95% predictive intervals; unlike
-Test 2, three of these intervals were narrow ([4, 4], [0, 0], [0, 2]) and could have been violated. Calibration
-evidence remains small (4 populations per cell, same model).
+The forecast was published before any live run (§3.3). On 16 new populations (Table 4) **all three preregistered
+hypotheses passed.** *Directional discrimination* (H6): the predicted-easier direction (push Y) flipped 7/8 populations
+vs 0/8 for push X (one-sided Fisher p = 7×10^−4^). *Proper score* (H7, as preregistered): Brier 0.052 vs 0.280 for a
+leave-one-out constant reference (difference 0.228, 95% CI [0.116, 0.284]). *Calibration* (H8): all four cells fell
+inside their 95% predictive intervals, three of them narrow ([4, 4], [0, 0], [0, 2]). Post-hoc diagnostics qualify H7:
+a direction-only rule (every push-Y population flips, no push-X population does) scores Brier 0.0625, so the emulator's
+numerical advantage over knowing the direction is small (0.010, 95% CI [−0.005, 0.041]); and when cells with identical
+outcomes are given posterior uncertainty (Beta-drawn cell probabilities), the CI of the improvement over the constant
+reference widens to [−0.11, 0.28]. Test 3 therefore confirms the directional forecast on new populations; it adds
+little evidence about precise probabilities (4 populations per cell, same model, previously explored pair).
 
-: **Table 4.** Preregistered test 3 (fresh targets; push Y: X → Y, push X: Y → X; N = 24; 100 rounds; predictions public
+: **Table 4.** Preregistered test 3 (new populations; push Y: X → Y, push X: Y → X; N = 24; 100 rounds; predictions public
 before the runs).
 
 | Direction | c | Live k/4 | Emulator φ | 95% PI (k) |
@@ -311,8 +320,8 @@ retrospective, emulated, with pooled policies and one driver.
 # 6. Conclusion
 
 A pooled-policy forecast failed, while
-target-conditional forecasts confirmed a large asymmetry and, externally timestamped on fresh targets, predicted all four
-cells. Exact policies trace the failure to aggregation across contexts and biased small-sample estimators: forecasts should be
+target-conditional forecasts confirmed a large asymmetry, including an externally timestamped directional forecast on
+new populations. Exact policies trace the failure to aggregation across contexts and biased small-sample estimators: forecasts should be
 target-specific, estimator-checked and prospective.
 
 # Code and Data
