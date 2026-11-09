@@ -1,4 +1,4 @@
-# swarm-ews — forecasting takeover in LLM agent populations
+# Forecasting Takeover in LLM Agent Populations
 
 Apart Research **Swarm Alignment Hackathon 2026** (Track 2, bridging Track 4). Submission:
 `report/Apart Research hackathon submission template.docx` (source: the `.md` next to it; build with
