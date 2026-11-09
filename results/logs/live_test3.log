@@ -1,0 +1,20 @@
+8 runs to do -> results/runs/live_test3
+[1/8] deepseek-v4-flash__N24__cm4__s202__wXY rounds=25 f_end=1.00 parse_fail=0.000 cost=0.0044 ledger=1.530 (5289s)
+[2/8] deepseek-v4-flash__N24__cm4__s203__wXY rounds=29 f_end=1.00 parse_fail=0.000 cost=0.0051 ledger=1.534 (5832s)
+[3/8] deepseek-v4-flash__N24__cm4__s200__wXY rounds=30 f_end=1.00 parse_fail=0.000 cost=0.0053 ledger=1.535 (5952s)
+[4/8] deepseek-v4-flash__N24__cm4__s201__wXY rounds=30 f_end=1.00 parse_fail=0.000 cost=0.0053 ledger=1.536 (6130s)
+[5/8] deepseek-v4-flash__N24__cm3__s203__wXY rounds=35 f_end=1.00 parse_fail=0.000 cost=0.0064 ledger=1.539 (6550s)
+[6/8] deepseek-v4-flash__N24__cm3__s200__wXY rounds=50 f_end=1.00 parse_fail=0.000 cost=0.0092 ledger=1.547 (7753s)
+[7/8] deepseek-v4-flash__N24__cm3__s202__wXY rounds=100 f_end=1.00 parse_fail=0.000 cost=0.0184 ledger=1.565 (10336s)
+[8/8] deepseek-v4-flash__N24__cm3__s201__wXY rounds=100 f_end=0.05 parse_fail=0.000 cost=0.0184 ledger=1.566 (10393s)
+calls=8270 cached=0 session_spend=0.0725 ledger_total=1.5656 cap=30.0 reasoning_leaks=0 retries=32
+8 runs to do -> results/runs/live_test3
+[1/8] deepseek-v4-flash__N24__cm3__s201__wYX rounds=100 f_end=0.05 parse_fail=0.000 cost=0.0184 ledger=1.706 (20188s)
+[2/8] deepseek-v4-flash__N24__cm4__s200__wYX rounds=100 f_end=0.10 parse_fail=0.000 cost=0.0175 ledger=1.707 (20360s)
+[3/8] deepseek-v4-flash__N24__cm3__s200__wYX rounds=100 f_end=0.00 parse_fail=0.000 cost=0.0184 ledger=1.708 (20484s)
+[4/8] deepseek-v4-flash__N24__cm3__s202__wYX rounds=100 f_end=0.00 parse_fail=0.000 cost=0.0184 ledger=1.709 (20540s)
+[5/8] deepseek-v4-flash__N24__cm4__s202__wYX rounds=100 f_end=0.15 parse_fail=0.000 cost=0.0176 ledger=1.709 (20543s)
+[6/8] deepseek-v4-flash__N24__cm4__s203__wYX rounds=100 f_end=0.05 parse_fail=0.000 cost=0.0176 ledger=1.709 (20603s)
+[7/8] deepseek-v4-flash__N24__cm3__s203__wYX rounds=100 f_end=0.05 parse_fail=0.000 cost=0.0184 ledger=1.709 (20605s)
+[8/8] deepseek-v4-flash__N24__cm4__s201__wYX rounds=100 f_end=0.15 parse_fail=0.000 cost=0.0176 ledger=1.709 (20661s)
+calls=16404 cached=0 session_spend=0.1439 ledger_total=1.7095 cap=30.0 reasoning_leaks=0 retries=116

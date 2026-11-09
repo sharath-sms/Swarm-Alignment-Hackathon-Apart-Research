@@ -1,0 +1,65 @@
+{
+ "n_runs": 16,
+ "cells": {
+  "XY_cm3": {
+   "k": 3,
+   "n": 4,
+   "pred": 0.877,
+   "PI": [
+    1,
+    4
+   ],
+   "inside": true
+  },
+  "XY_cm4": {
+   "k": 4,
+   "n": 4,
+   "pred": 1.0,
+   "PI": [
+    4,
+    4
+   ],
+   "inside": true
+  },
+  "YX_cm3": {
+   "k": 0,
+   "n": 4,
+   "pred": 0.0,
+   "PI": [
+    0,
+    0
+   ],
+   "inside": true
+  },
+  "YX_cm4": {
+   "k": 0,
+   "n": 4,
+   "pred": 0.068,
+   "PI": [
+    0,
+    2
+   ],
+   "inside": true
+  }
+ },
+ "H6": {
+  "predicted_easier": "XY",
+  "easier": "7/8",
+  "harder": "0/8",
+  "p_one_sided": 0.0006993006993006993,
+  "pass": true
+ },
+ "H7": {
+  "brier_pred": 0.05206325,
+  "brier_loo_ref": 0.27999999999999997,
+  "diff": 0.22793674999999997,
+  "ci": [
+   0.11590897222222221,
+   0.2839506388888889
+  ],
+  "pass": true
+ },
+ "H8": {
+  "all_inside": true
+ }
+}

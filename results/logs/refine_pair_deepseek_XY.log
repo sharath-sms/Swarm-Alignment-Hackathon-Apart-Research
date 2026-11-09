@@ -1,1 +1,4 @@
 deepseek-v4-flash X->Y: 283 states cover 0.9; new samples 2577
+calls=2577 cached=0 session_spend=0.0227 ledger_total=1.4637 cap=30.0 reasoning_leaks=0 retries=30
+deepseek-v4-flash Y->X: 337 states cover 0.9; new samples 3340
+calls=3340 cached=0 session_spend=0.0294 ledger_total=1.4931 cap=30.0 reasoning_leaks=0 retries=32
